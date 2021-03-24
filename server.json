@@ -1,0 +1,65 @@
+{
+  "weekly-subscriptions": [
+    {
+      "name": "01/04", 
+      "subscribers": 4000,
+      "new": 54
+    },
+    {
+      "name": "02/04", 
+      "subscribers": 3000,
+      "new": 1400
+    },
+    {
+      "name": "03/04", 
+      "subscribers": 2000,
+      "new": 3000
+    },
+    {
+      "name": "04/04", 
+      "subscribers": 2780,
+      "new": 400
+    },
+    {
+      "name": "05/04", 
+      "subscribers": 1890,
+      "new": 400
+    },
+    {
+      "name": "06/04", 
+      "subscribers": 2390,
+      "new": 812
+    },
+    {
+      "name": "07/04", 
+      "subscribers": 3490,
+      "new": 321
+    }
+  ],
+  "segments": [
+    {
+      "name": "Segmento A",
+      "value": 25
+    },
+    {
+      "name": "Segmento B",
+      "value": 10
+    },
+    {
+      "name": "Segmento C",
+      "value": 5
+    },
+    {
+      "name": "Segmento D",
+      "value": 54
+    },
+    {
+      "name": "Segmento E",
+      "value": 20
+    },
+    {
+      "name": "Segmento F",
+      "value": 30
+    }
+  ]
+}
