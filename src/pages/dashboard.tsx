@@ -1,75 +1,13 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, SimpleGrid, Text, color, Divider} from '@chakra-ui/react'
+import { Box, Flex, SimpleGrid, Text, Divider} from '@chakra-ui/react'
 
 import { Sidebar } from '../components/Sidebar'
 import { Header } from '../components/Header'
 
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie } from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, Tooltip, PieChart, Pie } from 'recharts'
 
-const data = [
-  {
-    name: '01/04', 
-    subscribers: 4000,
-    new: 54,
-  },
-  {
-    name: '02/04', 
-    subscribers: 3000,
-    new: 1400,
-  },
-  {
-    name: '03/04', 
-    subscribers: 2000,
-    new: 3000,
-  },
-  {
-    name: '04/04', 
-    subscribers: 2780,
-    new: 400,
-  },
-  {
-    name: '05/04', 
-    subscribers: 1890,
-    new: 400,
-  },
-  {
-    name: '06/04', 
-    subscribers: 2390,
-    new: 812,
-  },
-  {
-    name: '07/04', 
-    subscribers: 3490,
-    new: 321,
-  },
-];
-
-const segments = [
-  {
-    "name": "Segmento A",
-    "value": 25
-  },
-  {
-    "name": "Segmento B",
-    "value": 10
-  },
-  {
-    "name": "Segmento C",
-    "value": 5
-  },
-  {
-    "name": "Segmento D",
-    "value": 54
-  },
-  {
-    "name": "Segmento E",
-    "value": 20
-  },
-  {
-    "name": "Segmento F",
-    "value": 30
-  }
-]
+import { api } from '../services/api'
+import { GetServerSideProps } from 'next'
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && label) {
@@ -93,8 +31,27 @@ function CustomTooltip({ active, payload, label }) {
   return null;
 };
 
+type WeeklySubscription = {
+  name: string;
+  subscribers: number;
+  new: number;
+}
 
-export default function Dashboard() {
+type Segment = {
+  name: string;
+  value: number;
+}
+
+interface DashboardProps {
+  segments: Segment[];
+  weeklySubscriptions: WeeklySubscription[]
+}
+
+export default function Dashboard({ 
+  weeklySubscriptions,
+  segments 
+}: DashboardProps) {
+
   return (
     <Flex direction="column" h="100vh">
       <Head>
@@ -124,7 +81,7 @@ export default function Dashboard() {
             <Text fontWeight="medium" fontSize="lg">Incritos da semana</Text>
             <Divider my="4" />
             <ResponsiveContainer width="100%" height={160}>
-              <BarChart data={data} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
+              <BarChart data={weeklySubscriptions} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
                 <CartesianGrid stroke="#ddd" strokeDasharray="3 3" vertical={false} />
                 <XAxis fontSize={14} dataKey="name" />
                 <Tooltip cursor={{ fill: '#f5f5f5' }} content={CustomTooltip} />
@@ -185,4 +142,16 @@ export default function Dashboard() {
       </Flex>
     </Flex>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { data: subscriptions } = await api.get('/reports/weekly-subscriptions')
+  const { data: segments } = await api.get('/reports/segments')
+
+  return {
+    props: {
+      weeklySubscriptions: subscriptions,
+      segments
+    }
+  }
 }
