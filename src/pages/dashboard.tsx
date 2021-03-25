@@ -1,10 +1,10 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, SimpleGrid, Text, color, Divider} from '@chakra-ui/react'
+import { Box, Flex, SimpleGrid, Text, Divider, useColorModeValue } from '@chakra-ui/react'
 
 import { Sidebar } from '../components/Sidebar'
 import { Header } from '../components/Header'
 
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie } from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, Tooltip, PieChart, Pie } from 'recharts'
 
 const data = [
   {
@@ -72,19 +72,24 @@ const segments = [
 ]
 
 function CustomTooltip({ active, payload, label }) {
+  const textColor = useColorModeValue("gray.700", "gray.50")
+  const shapeBg = useColorModeValue("white", "gray.800")
+
+  const altTextColor = useColorModeValue("gray.600", "gray.300")
+  
   if (active && payload && label) {
     return (
       <Box
         as="div" 
-        bgColor="white" 
+        bgColor={shapeBg}
         p="4"
         maxWidth="48"
         shadow="0 0 20px rgba(0, 0, 0, 0.1)"
         borderRadius={4}
       >
-        <Text fontWeight="medium">Data: {label}</Text>
+        <Text fontWeight="medium" color={textColor}>Data: {label}</Text>
         {payload.map(item => (
-          <Text key={item.name} color="gray.600">{item.name}: {item.value}</Text>
+          <Text key={item.name} color={altTextColor}>{item.name}: {item.value}</Text>
         ))}
       </Box>
     );
@@ -94,7 +99,10 @@ function CustomTooltip({ active, payload, label }) {
 };
 
 
-export default function Dashboard() {
+export default function Dashboard() {  
+  const textColor = useColorModeValue("gray.700", "gray.50")
+  const shapeBg = useColorModeValue("white", "gray.800")
+
   return (
     <Flex direction="column" h="100vh">
       <Head>
@@ -116,12 +124,12 @@ export default function Dashboard() {
         >
           <Box
             as="div" 
-            bgColor="white" 
+            bgColor={shapeBg}
             p="8"
             shadow="0 0 20px rgba(0, 0, 0, 0.05)"
             borderRadius={4}
           >
-            <Text fontWeight="medium" fontSize="lg">Incritos da semana</Text>
+            <Text fontWeight="medium" fontSize="lg" color={textColor}>Incritos da semana</Text>
             <Divider my="4" />
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={data} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
@@ -135,12 +143,12 @@ export default function Dashboard() {
           </Box>
           <Box
             as="div" 
-            bgColor="white" 
+            bgColor={shapeBg}
             p="8"
             shadow="0 0 20px rgba(0, 0, 0, 0.05)"
             borderRadius={4}
           >
-            <Text fontWeight="medium" fontSize="lg">Taxa de abertura 
+            <Text fontWeight="medium" fontSize="lg" color={textColor}>Taxa de abertura 
               <Text fontWeight="normal" fontSize="sm" display="inline" color="gray.500">
                 {' '}(por segmento)
               </Text>
@@ -174,12 +182,12 @@ export default function Dashboard() {
           </Box>
           <Box
             as="div" 
-            bgColor="white" 
+            bgColor={shapeBg}
             p="8"
             shadow="0 0 20px rgba(0, 0, 0, 0.05)"
             borderRadius={4}
           >
-            asd
+            <Text fontWeight="medium" fontSize="lg" color={textColor}>Outros dados</Text>
           </Box>
         </SimpleGrid>
       </Flex>

@@ -4,7 +4,7 @@ import { Divider, Flex, Heading, Link, Text, VStack } from '@chakra-ui/react'
 import { Button } from '../components/Button';
 import { Input } from '../components/Form/Input';
 
-export default function Home() {
+export default function ForgotPassword() {
   return (
     <Flex 
       w="100vw" 
