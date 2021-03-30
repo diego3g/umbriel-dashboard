@@ -1,10 +1,13 @@
 import Head from 'next/head'
-import { Box, Flex, SimpleGrid, Text, Divider, useColorModeValue } from '@chakra-ui/react'
+import { Box, Flex, SimpleGrid, Text, Divider, useColorModeValue, theme } from '@chakra-ui/react'
+import dynamic from 'next/dynamic'
 
 import { Sidebar } from '../components/Sidebar'
 import { Header } from '../components/Header'
 
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, Tooltip, PieChart, Pie } from 'recharts'
+const Chart = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+})
 
 const data = [
   {
@@ -71,6 +74,63 @@ const segments = [
   }
 ]
 
+
+const options = {
+  chart: {
+    toolbar: {
+      show: false,
+    },
+    zoom: {
+      enabled: false,
+    },
+    foreColor: theme.colors.gray[500]
+  },
+  grid: {
+    show: false,
+  },
+  dataLabels: {
+    enabled: false
+  },
+  stroke: {
+    curve: 'smooth'
+  },
+  xaxis: {
+    type: 'datetime',
+    axisBorder: {
+      color: theme.colors.gray[600],
+    },
+    axisTicks: {
+      color: theme.colors.gray[600],
+    },
+    categories: [
+      "2018-04-19T00:00:00.000Z",
+      "2018-05-19T01:30:00.000Z",
+      "2018-06-19T02:30:00.000Z",
+      "2018-07-19T03:30:00.000Z",
+      "2018-08-19T04:30:00.000Z",
+      "2018-09-19T05:30:00.000Z"
+    ]
+  },
+  tooltip: {
+    enabled: false
+  },
+  fill: {
+    opacity: 0.3,
+    type: 'gradient',
+    gradient: {
+      shade: 'dark',
+      opacityFrom: 0.7,
+      opacityTo: 0.3,
+    }
+  }
+}
+
+const series = [{
+  name: 'series1',
+  data: [31, 120, 28, 51, 18, 109]
+}]
+
+
 function CustomTooltip({ active, payload, label }) {
   const textColor = useColorModeValue("gray.700", "gray.50")
   const shapeBg = useColorModeValue("white", "gray.800")
@@ -104,90 +164,71 @@ export default function Dashboard() {
   const shapeBg = useColorModeValue("white", "gray.800")
 
   return (
-    <Flex direction="column" h="100vh">
+    <Flex 
+      direction="column"
+    >
       <Head>
         <title>Dashboard</title>
       </Head>
 
       <Header />
 
-      <Flex my="6" flex="1">
+      <Flex my="6" width="100%" maxWidth={1480} marginX="auto" px="6">
         <Sidebar />
 
         <SimpleGrid 
           flex="1"
           mr="8"
           borderRadius={4}
-          columns={3} 
+          columns={3}
+          minChildWidth="320px"
           gap="4"
           alignItems="flex-start"
         >
           <Box
             as="div" 
             bgColor={shapeBg}
-            p="8"
+            p={["6", "8"]}
             shadow="0 0 20px rgba(0, 0, 0, 0.05)"
             borderRadius={4}
           >
-            <Text fontWeight="medium" fontSize="lg" color={textColor}>Incritos da semana</Text>
-            <Divider my="4" />
-            <ResponsiveContainer width="100%" height={160}>
-              <BarChart data={data} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
-                <CartesianGrid stroke="#ddd" strokeDasharray="3 3" vertical={false} />
-                <XAxis fontSize={14} dataKey="name" />
-                <Tooltip cursor={{ fill: '#f5f5f5' }} content={CustomTooltip} />
-                <Bar dataKey="subscribers" stackId="a" fill="#805AD5" barSize={30} />
-                <Bar dataKey="new" stackId="a" fill="#ED64A6" />
-              </BarChart>
-            </ResponsiveContainer>
+            <Text fontWeight="medium" fontSize="lg" color={textColor}>Inscritos da semana</Text>
+            <Chart
+              options={options}
+              series={series}
+              type="area"
+              height={160}
+            />
           </Box>
           <Box
             as="div" 
             bgColor={shapeBg}
-            p="8"
+            p={["6", "8"]}
             shadow="0 0 20px rgba(0, 0, 0, 0.05)"
             borderRadius={4}
           >
-            <Text fontWeight="medium" fontSize="lg" color={textColor}>Taxa de abertura 
-              <Text fontWeight="normal" fontSize="sm" display="inline" color="gray.500">
-                {' '}(por segmento)
-              </Text>
-            </Text>
-            <Divider my="4" />
-            <ResponsiveContainer width="100%" height={160}>
-              <PieChart margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
-                <Tooltip content={({ active, payload }) => {
-                  console.log(active, payload)
-                  if (!active || !payload) {
-                    return null;
-                  }
-
-                  return (
-                    <Box
-                      as="div" 
-                      bgColor="white" 
-                      p="4"
-                      maxWidth="48"
-                      shadow="0 0 20px rgba(0, 0, 0, 0.1)"
-                      borderRadius={4}
-                    >
-                      <Text fontWeight="medium" display="inline">{payload[0].name}:</Text>
-                      <Text display="inline"> {payload[0].value}%</Text>
-                    </Box>
-                  )
-                }} />
-                <Pie data={segments} dataKey="value" cx="50%" cy="50%" outerRadius={60} fill="#8884d8" />
-              </PieChart>
-            </ResponsiveContainer>
+            <Text fontWeight="medium" fontSize="lg" color={textColor}>Taxa de abertura</Text>
+            <Chart
+              options={options}
+              series={series}
+              type="area"
+              height={160}
+            />
           </Box>
           <Box
             as="div" 
             bgColor={shapeBg}
-            p="8"
+            p={["6", "8"]}
             shadow="0 0 20px rgba(0, 0, 0, 0.05)"
             borderRadius={4}
           >
             <Text fontWeight="medium" fontSize="lg" color={textColor}>Outros dados</Text>
+            <Chart
+              options={options}
+              series={series}
+              type="area"
+              height={160}
+            />
           </Box>
         </SimpleGrid>
       </Flex>

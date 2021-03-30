@@ -13,14 +13,16 @@ export default function Subscribers() {
   const altTextColor = useColorModeValue("gray.600", "gray.300")
   
   return (
-    <Box>
+    <Flex 
+      direction="column"
+    >
       <Head>
         <title>Inscritos</title>
       </Head>
 
       <Header />
 
-      <Flex my="6">
+      <Flex my="6" width="100%" maxWidth={1480} marginX="auto" px="6">
         <Sidebar />
 
         <Box 
@@ -29,7 +31,7 @@ export default function Subscribers() {
           borderRadius={4}
           bgColor={shapeBg} 
           shadow="0 0 20px rgba(0, 0, 0, 0.05)"
-          p="8"
+          p={["6", "8"]}
         >
           <Flex mb="8" justifyContent="space-between" alignItems="center">
             <Box>
@@ -82,7 +84,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -97,7 +99,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -112,7 +114,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -127,7 +129,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -142,7 +144,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -157,7 +159,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -172,7 +174,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -187,7 +189,7 @@ export default function Subscribers() {
                 <Td>
                   <Box>
                     <Text fontWeight="medium" fontSize="sm" color={textColor}>Diego Fernandes</Text>
-                     color={altTextColor}
+                     <Text fontSize="small" color={altTextColor}>diego@rocketseat.team</Text>
                   </Box>
                 </Td>
                 <Td color="gray.500">04 de Abril, 2021</Td>
@@ -217,6 +219,6 @@ export default function Subscribers() {
           </Flex>
         </Box>
       </Flex>
-    </Box>
+    </Flex>
   )
 }
