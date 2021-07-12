@@ -1,44 +1,98 @@
-import { Divider, Flex, Heading, Link, VStack } from '@chakra-ui/react'
-import Head from 'next/head'
-import { Button } from '../components/Button';
+import { Flex, Button, Stack, Text, Link as ChakraLink } from '@chakra-ui/react';
+import Link from 'next/link'
 
+import { SubmitHandler, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import { useContext } from 'react';
 import { Input } from '../components/Form/Input';
+import { AuthContext } from '../contexts/AuthContext';
+import Head from 'next/head';
+import { Logo } from '../components/Logo';
 
-export default function Home() {
+type SignInFormData = {
+  email: string;
+  password: string;
+};
+
+const signInFormSchema = yup.object().shape({
+  email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
+  password: yup.string().required('Senha obrigatória')
+});
+
+export default function SignIn() {
+  const { signIn } = useContext(AuthContext);
+  const { register, handleSubmit, formState } = useForm({
+    resolver: yupResolver(signInFormSchema)
+  });
+
+  const { errors } = formState;
+
+  const handleSignIn: SubmitHandler<SignInFormData> = async data => {
+    await signIn(data);
+  };
+
   return (
-    <Flex 
-      w="100vw" 
-      h="100vh" 
-      align="center" 
-      justify="center"
-    >
+    <>
       <Head>
-        <title>Fazer login</title>
+        <title>Login | Umbriel Admin</title>
       </Head>
-
-      <Flex 
-        as="form" 
-        w="100%" 
-        maxWidth={360} 
-        padding={8} 
-        bg="white" 
-        flexDir="column"
-        borderRadius={4}
-        shadow="0 0 20px rgba(0, 0, 0, 0.05)"
-      >
-        <Heading size="md">
-          Fazer login
-        </Heading>
-
-        <Divider my={6} />
-        
-        <VStack spacing={4}>
-          <Input name="email" type="email" label="E-mail" />
-          <Input name="password" type="password" label="Senha" />
-        </VStack>
-
-        <Button type="submit" mt="8">Entrar</Button>
+      <Flex w="100vw" h="100vh" alignItems="center" justifyContent="center" flexDirection={['column', 'row']}>
+        <Stack p={[6, 8]} spacing="4" mr={[0, 0, 0, 100]}>
+          <Logo />
+          <Text color="gray.900" letterSpacing="tight" lineHeight="normal" fontSize={["3xl","5xl"]} mb="8" fontWeight="extrabold" maxW={400}>
+            Sign In to access the dashboard
+          </Text>
+          <Text fontSize={["lg", "xl"]} mb="4" maxW={285}>
+            If you don't have an account, you can{' '}
+            <Link href="register" passHref>
+              <ChakraLink color="purple.500" fontWeight="bold">Register here!</ChakraLink>
+            </Link>
+          </Text>
+        </Stack>
+        <Flex
+          as="form"
+          width="100%"
+          maxWidth={400}
+          p={[6, 8]}
+          borderRadius={8}
+          flexDirection="column"
+          onSubmit={handleSubmit(handleSignIn)}
+        >
+          <Stack spacing="4">
+            <Input
+              name="email"
+              type="email"
+              placeholder="Enter email"
+              {...register('email')}
+              error={errors.email}
+            />
+            <Input
+              name="password"
+              type="password"
+              placeholder="Password"
+              {...register('password')}
+              error={errors.password}
+            />
+          </Stack>
+          <Button
+            type="submit"
+            mt="6"
+            colorScheme="purple"
+            size="lg"
+            isLoading={formState.isSubmitting}
+          >
+            Entrar
+          </Button>
+          <Link href="/forgot-password" passHref>
+            <ChakraLink alignSelf="center" mt="4">
+              <Text color="gray.500">Password recovery</Text>
+            </ChakraLink>
+          </Link>
+        </Flex>
       </Flex>
-    </Flex>
-  )
+    </>
+  );
 }
