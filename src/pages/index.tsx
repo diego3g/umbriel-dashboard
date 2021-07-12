@@ -11,6 +11,7 @@ import { Input } from '../components/Form/Input';
 import { AuthContext } from '../contexts/AuthContext';
 import Head from 'next/head';
 import { Logo } from '../components/Logo';
+import { withSSRGuest } from '../utils/withSSRGuest';
 
 type SignInFormData = {
   email: string;
@@ -96,3 +97,9 @@ export default function SignIn() {
     </>
   );
 }
+
+export const getServerSideProps = withSSRGuest(async ctx => {
+  return {
+    props: {}
+  };
+});
