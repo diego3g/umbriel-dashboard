@@ -46,12 +46,6 @@ export default function SignIn() {
           <Text color="gray.900" letterSpacing="tight" lineHeight="normal" fontSize={["3xl","5xl"]} mb="8" fontWeight="extrabold" maxW={400}>
             Sign In to access the dashboard
           </Text>
-          <Text fontSize={["lg", "xl"]} mb="4" maxW={285}>
-            If you don't have an account, you can{' '}
-            <Link href="/register" passHref>
-              <ChakraLink color="purple.500" fontWeight="bold">Register here!</ChakraLink>
-            </Link>
-          </Text>
         </Stack>
         <Flex
           as="form"
