@@ -7,9 +7,6 @@ import decode from 'jwt-decode';
 
 type User = {
   email: string;
-  avatar: string;
-  name: string;
-  isAdmin: boolean;
 };
 
 type SignInCredentials = {
@@ -67,9 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         password
       });
 
-      const { token, user } = response.data;
-
-      const { avatar, name } = user;
+      const { token } = response.data;
 
       setCookie(undefined, 'umbriel-admin.token', token, {
         maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -78,20 +73,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       api.defaults.headers.Authorization = `Bearer ${token}`;
 
-      const { isAdmin } = decode<{ isAdmin: boolean }>(token);
-
-      if (!isAdmin) {
-        throw new Error('User is not admin!')
-      }
-
       setUser({
         email,
-        avatar,
-        name,
-        isAdmin
       });
 
-      Router.push('/dashboard');
+      Router.push('/messages');
     } catch (err) {
       console.log(err);
     }
