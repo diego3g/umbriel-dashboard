@@ -22,21 +22,6 @@ export function withSSRAuth<P>(fn: GetServerSideProps<P>) {
       };
     }
 
-    const user = decode<{ isAdmin: boolean }>(token);
-
-    const { isAdmin } = user;
-
-    if (!isAdmin) {
-      destroyCookie(ctx, 'umbriel-admin.token');
-
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false
-        }
-      };
-    }
-
     try {
       return await fn(ctx);
     } catch (err) {

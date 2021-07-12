@@ -48,7 +48,7 @@ export default function SignIn() {
           </Text>
           <Text fontSize={["lg", "xl"]} mb="4" maxW={285}>
             If you don't have an account, you can{' '}
-            <Link href="register" passHref>
+            <Link href="/register" passHref>
               <ChakraLink color="purple.500" fontWeight="bold">Register here!</ChakraLink>
             </Link>
           </Text>
