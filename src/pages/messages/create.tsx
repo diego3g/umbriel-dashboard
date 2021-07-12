@@ -7,6 +7,7 @@ import { Header } from '../../components/Header'
 import { Sidebar } from '../../components/Sidebar'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Form/Input'
+import { withSSRAuth } from '../../utils/withSSRAuth'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -116,3 +117,9 @@ export default function CreateMessage() {
     </Box>
   )
 }
+
+export const getServerSideProps = withSSRAuth(async ctx => {
+  return {
+    props: {}
+  };
+});
