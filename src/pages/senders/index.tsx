@@ -4,6 +4,7 @@ import { Box, Flex, Heading, HStack, Table, Tag, Tbody, Td, Text, Th, Thead, Tr,
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
 import { Button } from '../../components/Button'
+import { withSSRAuth } from '../../utils/withSSRAuth'
 
 export default function Senders() {
   return (
@@ -88,3 +89,9 @@ export default function Senders() {
     </Box>
   )
 }
+
+export const getServerSideProps = withSSRAuth(async ctx => {
+  return {
+    props: {}
+  };
+});

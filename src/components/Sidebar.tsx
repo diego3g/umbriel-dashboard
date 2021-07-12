@@ -1,9 +1,12 @@
 import { VStack, Link, Text, Flex, Button } from "@chakra-ui/react";
 import { RiMailOpenLine, RiContactsLine, RiPencilRulerLine, RiPriceTag3Line, RiSettings2Line, RiSendPlaneLine, RiLogoutBoxLine } from "react-icons/ri";
+import { signOut } from "../contexts/AuthContext";
 import { ActiveLink } from "./ActiveLink";
 
 export function Sidebar() {
-  function handleSignOut() {}
+  function handleSignOut() {
+    signOut()
+  }
 
   return (
     <Flex

@@ -1,4 +1,6 @@
-import { Flex, Avatar, AvatarBadge, Box, Text, HStack } from "@chakra-ui/react";
+import { Flex, Avatar, Box, Text, HStack } from "@chakra-ui/react";
+
+import { Logo } from './Logo'
 
 export function Header() {
   return (
@@ -16,7 +18,7 @@ export function Header() {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Text fontWeight="bold" fontSize="2xl">umbriel</Text>
+        <Logo />
 
         <HStack spacing="4" alignItems="center">
           <Box textAlign="right">
