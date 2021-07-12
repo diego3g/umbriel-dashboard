@@ -19,7 +19,7 @@ export default function Home() {
       <Flex 
         as="form" 
         w="100%" 
-        maxWidth={400} 
+        maxWidth={360} 
         padding={8} 
         bg="white" 
         flexDir="column"
@@ -38,19 +38,6 @@ export default function Home() {
         </VStack>
 
         <Button type="submit" mt="8">Entrar</Button>
-
-        <Link 
-          href="/forgot-password"
-          alignSelf="center" 
-          textDecor="underline"
-          mt={4} 
-          fontSize="sm"
-          color="gray.600"
-          _hover={{ color: 'gray.700' }} 
-          _active={{ color: 'gray.800' }} 
-        >
-          Esqueceu sua senha?
-        </Link>
       </Flex>
     </Flex>
   )

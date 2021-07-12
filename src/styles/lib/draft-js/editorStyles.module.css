@@ -1,0 +1,8 @@
+.editor {
+  box-sizing: border-box;
+  cursor: text;
+}
+
+.editor :global(.public-DraftEditor-content) {
+  min-height: 240px;
+}
