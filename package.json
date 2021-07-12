@@ -36,6 +36,7 @@
     "react-editor-js": "^1.9.0",
     "react-hook-form": "^7.10.1",
     "react-icons": "^4.1.0",
+    "react-query": "^3.18.1",
     "rich-markdown-editor": "^11.1.6",
     "yup": "^0.32.9"
   },
