@@ -4,12 +4,17 @@ import { theme } from '../styles/theme';
 
 import { AuthProvider } from '../contexts/AuthContext';
 
+import { QueryClientProvider } from 'react-query';
+import { queryClient } from '../services/queryClient';
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
-      <ChakraProvider resetCSS theme={theme}>
-        <Component {...pageProps} />
-      </ChakraProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ChakraProvider resetCSS theme={theme}>
+          <Component {...pageProps} />
+        </ChakraProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   )
 }

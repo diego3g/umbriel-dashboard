@@ -1,12 +1,35 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, HStack, Table, Tag, Tbody, Td, Text, Th, Thead, Tr, Link } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, Table, Tbody, Td, Text, Th, Thead, Tr, Link, Icon } from '@chakra-ui/react'
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
 import { Button } from '../../components/Button'
 import { withSSRAuth } from '../../utils/withSSRAuth'
+import { useContacts } from '../../services/hooks/useContacts'
+
+import { Input } from '../../components/Form/Input';
+
+import { RiSearch2Line } from 'react-icons/ri';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
+type SearchContactsFormData = {
+  search: string;
+};
 
 export default function Subscribers() {
+  const [page, setPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const { register, handleSubmit } = useForm();
+
+  const { data } = useContacts(page, searchQuery)
+
+  const handleSearchContacts: SubmitHandler<SearchContactsFormData> = async ({ search }) => {
+    setPage(1)
+    setSearchQuery(search);
+  };
+
   return (
     <Box>
       <Head>
@@ -31,6 +54,26 @@ export default function Subscribers() {
               <Heading size="lg" fontWeight="medium">Inscritos</Heading>
               <Text mt="1" color="gray.400">Listagem completa de inscritos</Text>
             </Box>
+
+            <Flex 
+              as="form" 
+              onSubmit={handleSubmit(handleSearchContacts)}
+            >
+              <Input
+                name="search"
+                placeholder="Search contacts"
+                {...register('search')}
+              />
+
+              <Button
+                size="lg"
+                fontSize="sm"
+                colorScheme="purple"
+                ml="2"
+              >
+                <Icon as={RiSearch2Line} fontSize="16" />
+              </Button>
+            </Flex>
           </Flex>
 
           <Table>
@@ -38,28 +81,17 @@ export default function Subscribers() {
               <Tr>
                 <Th>Contato</Th>
                 <Th>Data de inscrição</Th>
-                <Th>Status</Th>
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">diego@rocketseat.team</Link>
-                </Td>
-                <Td color="gray.500">04 de Abril, 2021</Td>
-                <Td>
-                  <Tag colorScheme="purple">Inscrito</Tag>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">diego.schell.f@gmail.com</Link>
-                </Td>
-                <Td color="gray.500">04 de Abril, 2021</Td>
-                <Td>
-                  <Tag colorScheme="red">Cancelado</Tag>
-                </Td>
-              </Tr>
+              {data?.contacts.map((contact, index) => (
+                <Tr>
+                  <Td>
+                    <Link color="blue.500" title="Ver detalhes">{contact.email}</Link>
+                  </Td>
+                  <Td color="gray.500">{contact.createdAt}</Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
 
