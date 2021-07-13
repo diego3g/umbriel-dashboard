@@ -71,7 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         path: '/'
       });
 
-      api.defaults.headers.Authorization = `Bearer ${token}`;
+      api.defaults.headers['x-access-token'] = token;
 
       setUser({
         email,
