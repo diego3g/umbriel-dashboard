@@ -1,12 +1,36 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, HStack, Table, Tag, Tbody, Td, Text, Th, Thead, Tr, Link } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, Table, Icon, Tbody, Td, Text, Th, Thead, Tr, Link } from '@chakra-ui/react'
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
 import { Button } from '../../components/Button'
 import { withSSRAuth } from '../../utils/withSSRAuth'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
+import { RiSearch2Line } from 'react-icons/ri';
+
+import { Input } from '../../components/Form/Input';
+import { useTags } from '../../services/hooks/useTags'
+
+
+type SearchTagsFormData = {
+  search: string;
+};
 
 export default function Tags() {
+  const [page, setPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const { register, handleSubmit } = useForm();
+
+  const { data, isLoading } = useTags(page, searchQuery)
+
+  const handleSearchContacts: SubmitHandler<SearchTagsFormData> = async ({ search }) => {
+    setPage(1)
+    setSearchQuery(search);
+  };
+
   return (
     <Box>
       <Head>
@@ -31,6 +55,28 @@ export default function Tags() {
               <Heading size="lg" fontWeight="medium">Tags</Heading>
               <Text mt="1" color="gray.400">Listagem completa de tags</Text>
             </Box>
+
+            <Flex 
+              as="form" 
+              onSubmit={handleSubmit(handleSearchContacts)}
+            >
+              <Input
+                name="search"
+                placeholder="Search contacts"
+                {...register('search')}
+              />
+
+              <Button
+                size="lg"
+                fontSize="sm"
+                colorScheme="purple"
+                ml="2"
+                disabled={isLoading}
+                isLoading={isLoading}
+              >
+                <Icon as={RiSearch2Line} fontSize="16" />
+              </Button>
+            </Flex>
           </Flex>
 
           <Table>
@@ -41,22 +87,16 @@ export default function Tags() {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">Ignite ReactJS 1.0</Link>
-                </Td>
-                <Td>
-                  <Text>1.200</Text>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">Ignite ReactJS 2.0</Link>
-                </Td>
-                <Td>
-                  <Text>1.200</Text>
-                </Td>
-              </Tr>
+              {data?.tags.map(tag => (
+                <Tr>
+                  <Td>
+                    <Link color="blue.500" title="Ver detalhes">{tag.title}</Link>
+                  </Td>
+                  <Td>
+                    <Text>{tag.subscribersCount}</Text>
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
 
