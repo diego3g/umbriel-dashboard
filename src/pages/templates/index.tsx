@@ -1,12 +1,35 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, HStack, Table, Tag, Tbody, Td, Text, Th, Thead, Tr, Link } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, Table, Tbody, Td, Text, Th, Thead, Tr, Link, Icon } from '@chakra-ui/react'
+import { RiSearch2Line } from 'react-icons/ri';
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
 import { Button } from '../../components/Button'
 import { withSSRAuth } from '../../utils/withSSRAuth'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useTemplates } from '../../services/hooks/useTemplates'
+
+import { Input } from '../../components/Form/Input';
+
+type SearchTemplatesFormData = {
+  search: string;
+};
 
 export default function Templates() {
+  const [page, setPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const { register, handleSubmit } = useForm();
+
+  const { data } = useTemplates(page, searchQuery)
+
+  const handleSearchContacts: SubmitHandler<SearchTemplatesFormData> = async ({ search }) => {
+    setPage(1)
+    setSearchQuery(search);
+  };
+
+
   return (
     <Box>
       <Head>
@@ -31,6 +54,26 @@ export default function Templates() {
               <Heading size="lg" fontWeight="medium">Templates</Heading>
               <Text mt="1" color="gray.400">Listagem completa de templates</Text>
             </Box>
+
+            <Flex 
+              as="form" 
+              onSubmit={handleSubmit(handleSearchContacts)}
+            >
+              <Input
+                name="search"
+                placeholder="Search templates"
+                {...register('search')}
+              />
+
+              <Button
+                size="lg"
+                fontSize="sm"
+                colorScheme="purple"
+                ml="2"
+              >
+                <Icon as={RiSearch2Line} fontSize="16" />
+              </Button>
+            </Flex>
           </Flex>
 
           <Table>
@@ -41,22 +84,19 @@ export default function Templates() {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">Default</Link>
-                </Td>
-                <Td textAlign="right">
-                  <Button colorScheme="purple" disabled size="sm" fontSize="sm">Template padrão</Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">Template Ignite</Link>
-                </Td>
-                <Td textAlign="right">
-                  <Button colorScheme="purple" size="sm" fontSize="sm">Definir como padrão</Button>
-                </Td>
-              </Tr>
+              {data?.templates.map(template => (
+                <Tr>
+                  <Td>
+                    <Link color="blue.500" title="Ver detalhes">{template.title}</Link>
+                  </Td>
+                
+                  <Td textAlign="right">
+                    <Button colorScheme="purple" disabled={template.isDefault} size="sm" fontSize="sm">
+                      {template.isDefault ? 'Default template' : 'Set as default'}
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
 
