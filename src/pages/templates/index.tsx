@@ -22,7 +22,7 @@ export default function Templates() {
 
   const { register, handleSubmit } = useForm();
 
-  const { data } = useTemplates(page, searchQuery)
+  const { data, isLoading } = useTemplates(page, searchQuery)
 
   const handleSearchContacts: SubmitHandler<SearchTemplatesFormData> = async ({ search }) => {
     setPage(1)
@@ -70,6 +70,8 @@ export default function Templates() {
                 fontSize="sm"
                 colorScheme="purple"
                 ml="2"
+                disabled={isLoading}
+                isLoading={isLoading}
               >
                 <Icon as={RiSearch2Line} fontSize="16" />
               </Button>
