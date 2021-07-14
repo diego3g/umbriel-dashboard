@@ -84,7 +84,7 @@ export default function Subscribers() {
               </Tr>
             </Thead>
             <Tbody>
-              {data?.contacts.map((contact, index) => (
+              {data?.contacts.map((contact) => (
                 <Tr>
                   <Td>
                     <Link color="blue.500" title="Ver detalhes">{contact.email}</Link>
