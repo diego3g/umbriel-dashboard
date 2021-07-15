@@ -108,7 +108,7 @@ export default function Senders() {
             </Thead>
             <Tbody>
               {data?.senders.map(sender => (
-                <Tr>
+                <Tr key={sender.id}>
                   <Td>
                     <Link color="blue.500" title="Ver detalhes">{sender.name}</Link>
                   </Td>

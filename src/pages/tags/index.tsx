@@ -88,7 +88,7 @@ export default function Tags() {
             </Thead>
             <Tbody>
               {data?.tags.map(tag => (
-                <Tr>
+                <Tr key={tag.id}>
                   <Td>
                     <Link color="blue.500" title="Ver detalhes">{tag.title}</Link>
                   </Td>
