@@ -26,7 +26,7 @@ export default function Tags() {
 
   const { data, isLoading } = useTags(page, searchQuery)
 
-  const handleSearchContacts: SubmitHandler<SearchTagsFormData> = async ({ search }) => {
+  const handleSearchTags: SubmitHandler<SearchTagsFormData> = async ({ search }) => {
     setPage(1)
     setSearchQuery(search);
   };
@@ -58,7 +58,7 @@ export default function Tags() {
 
             <Flex 
               as="form" 
-              onSubmit={handleSubmit(handleSearchContacts)}
+              onSubmit={handleSubmit(handleSearchTags)}
             >
               <Input
                 name="search"
