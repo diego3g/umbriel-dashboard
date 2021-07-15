@@ -11,6 +11,7 @@ type Sender = {
 
 type GetSendersReponse = {
   senders: Sender[];
+  totalCount: string;
 };
 
 export async function getSenders(page: number, searchQuery?: string): Promise<GetSendersReponse>  {
@@ -21,7 +22,7 @@ export async function getSenders(page: number, searchQuery?: string): Promise<Ge
     }
   });
 
-  const { data } = response;
+  const { data, totalCount } = response.data;
 
   const senders = data.map(sender => {
     return {
@@ -34,7 +35,8 @@ export async function getSenders(page: number, searchQuery?: string): Promise<Ge
   });
 
   return {
-    senders
+    senders,
+    totalCount
   };
 }
 
