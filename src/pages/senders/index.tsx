@@ -1,12 +1,35 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, HStack, Table, Tag, Tbody, Td, Text, Th, Thead, Tr, Link } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, Table, Icon, Tbody, Td, Text, Th, Thead, Tr, Link } from '@chakra-ui/react'
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
 import { Button } from '../../components/Button'
 import { withSSRAuth } from '../../utils/withSSRAuth'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
+import { RiSearch2Line } from 'react-icons/ri';
+
+import { Input } from '../../components/Form/Input';
+import { useSenders } from '../../services/hooks/useSenders'
+
+type SearchSendersFormData = {
+  search: string;
+};
 
 export default function Senders() {
+  const [page, setPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const { register, handleSubmit } = useForm();
+
+  const { data, isLoading } = useSenders(page, searchQuery)
+
+  const handleSearchSenders: SubmitHandler<SearchSendersFormData> = async ({ search }) => {
+    setPage(1)
+    setSearchQuery(search);
+  };
+
   return (
     <Box>
       <Head>
@@ -31,6 +54,28 @@ export default function Senders() {
               <Heading size="lg" fontWeight="medium">Remetentes</Heading>
               <Text mt="1" color="gray.400">Listagem completa de remetentes</Text>
             </Box>
+
+            <Flex 
+              as="form" 
+              onSubmit={handleSubmit(handleSearchSenders)}
+            >
+              <Input
+                name="search"
+                placeholder="Search contacts"
+                {...register('search')}
+              />
+
+              <Button
+                size="lg"
+                fontSize="sm"
+                colorScheme="purple"
+                ml="2"
+                disabled={isLoading}
+                isLoading={isLoading}
+              >
+                <Icon as={RiSearch2Line} fontSize="16" />
+              </Button>
+            </Flex>
           </Flex>
 
           <Table>
@@ -42,28 +87,21 @@ export default function Senders() {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">Diego Fernandes</Link>
-                </Td>
-                <Td>
-                  <Text>diego@rocketseat.team</Text>
-                </Td>
-                <Td textAlign="right">
-                  <Button colorScheme="purple" disabled size="sm" fontSize="sm">Remetente padrão</Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Link color="blue.500" title="Ver detalhes">Robson Marques</Link>
-                </Td>
-                <Td>
-                  <Text>robson@rocketseat.team</Text>
-                </Td>
-                <Td textAlign="right">
-                  <Button colorScheme="purple" size="sm" fontSize="sm">Definir como padrão</Button>
-                </Td>
-              </Tr>
+              {data?.senders.map(sender => (
+                <Tr>
+                  <Td>
+                    <Link color="blue.500" title="Ver detalhes">{sender.name}</Link>
+                  </Td>
+                  <Td>
+                    <Text>{sender.email}</Text>
+                  </Td>
+                  <Td textAlign="right">
+                    <Button colorScheme="purple" disabled={sender.isDefault} size="sm" fontSize="sm">
+                      {sender.isDefault ? 'Default template' : 'Set as default'}
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
 
