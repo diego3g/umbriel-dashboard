@@ -12,6 +12,7 @@ import { Input } from '../../components/Form/Input';
 import { RiSearch2Line } from 'react-icons/ri';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { Pagination } from '../../components/Pagination'
 
 type SearchContactsFormData = {
   search: string;
@@ -97,23 +98,11 @@ export default function Subscribers() {
             </Tbody>
           </Table>
 
-          <Flex mt="8" justifyContent="space-between" alignItems="center">
-            <Box>
-              <Text fontSize="md" color="gray.600">
-                <strong>1</strong> - <strong>20</strong> de <strong>48</strong>
-              </Text>
-            </Box>
-
-            <HStack spacing="2">
-              <Button size="md" width="4">1</Button>
-              <Button size="md" width="4" bgColor="gray.300">2</Button>
-              <Button size="md" width="4" bgColor="gray.300">3</Button>
-              <Button size="md" width="4" bgColor="gray.300">4</Button>
-              <Text color="gray.500" px="2">...</Text>
-              <Button size="md" width="4" bgColor="gray.300">67</Button>
-              <Button size="md" width="4" bgColor="gray.300">68</Button>
-            </HStack>
-          </Flex>
+          <Pagination 
+            totalCountOfRegisters={data?.totalCount}
+            currentPage={page}
+            onPageChange={setPage}
+          />
         </Box>
       </Flex>
     </Box>
