@@ -10,8 +10,7 @@ export function PaginationItem({ number, isCurrent = false, onPageChange }: Pagi
   if (isCurrent) {
     return (
       <Button 
-        size="sm"
-        fontSize="xs"
+        size="md"
         width="4"
         colorScheme="purple"
         disabled
@@ -27,8 +26,7 @@ export function PaginationItem({ number, isCurrent = false, onPageChange }: Pagi
 
   return (
     <Button 
-      size="sm"
-      fontSize="xs"
+      size="md"
       width="4"
       bg="gray.300"
       colorScheme="purple"
