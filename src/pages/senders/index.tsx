@@ -134,7 +134,7 @@ export default function Senders() {
           <Flex mt="8" justifyContent="space-between" alignItems="center">
             <Box>
               <Text fontSize="md" color="gray.600">
-                <strong>1</strong> - <strong>10</strong> de <strong>48</strong>
+                <strong>1</strong> - <strong>20</strong> de <strong>48</strong>
               </Text>
             </Box>
 
