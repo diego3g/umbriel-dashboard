@@ -11,6 +11,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useTemplates } from '../../services/hooks/useTemplates'
 
 import { Input } from '../../components/Form/Input';
+import { queryClient } from '../../services/queryClient';
+import { useMutation } from 'react-query';
+import { api } from '../../services/api';
 
 type SearchTemplatesFormData = {
   search: string;
@@ -29,6 +32,22 @@ export default function Templates() {
     setSearchQuery(search);
   };
 
+  const setDefaultTemplate = useMutation(
+    async (templateId: string) => {
+      const response = await api.patch(`/templates/${templateId}/set-as-default`);
+
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('templates');
+      }
+    }
+  );
+
+  const handleSetDefaultTemplate = async (templateId: string) => {
+    await setDefaultTemplate.mutateAsync(templateId);
+  };
 
   return (
     <Box>
@@ -93,7 +112,13 @@ export default function Templates() {
                   </Td>
                 
                   <Td textAlign="right">
-                    <Button colorScheme="purple" disabled={template.isDefault} size="sm" fontSize="sm">
+                    <Button
+                      colorScheme="purple"
+                      disabled={template.isDefault}
+                      size="sm"
+                      fontSize="sm"
+                      onClick={() => handleSetDefaultTemplate(template.id)}
+                    >
                       {template.isDefault ? 'Default template' : 'Set as default'}
                     </Button>
                   </Td>
