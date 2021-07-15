@@ -9,6 +9,7 @@ type Template = {
 
 type GetTemplatesReponse = {
   templates: Template[];
+  totalCount: number;
 };
 
 export async function getTemplates(page: number, searchQuery?: string): Promise<GetTemplatesReponse>  {
@@ -19,7 +20,7 @@ export async function getTemplates(page: number, searchQuery?: string): Promise<
     }
   });
 
-  const { data } = response;
+  const { data, totalCount } = response.data;
 
   const templates = data.map(template => {
     return {
@@ -30,7 +31,8 @@ export async function getTemplates(page: number, searchQuery?: string): Promise<
   });
 
   return {
-    templates
+    templates,
+    totalCount
   };
 }
 
