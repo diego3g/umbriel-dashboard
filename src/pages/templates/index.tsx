@@ -26,8 +26,6 @@ export default function Templates() {
 
   const { register, handleSubmit } = useForm();
 
-  console.log(page)
-
   const { data, isLoading } = useTemplates(page, searchQuery)
 
   const handleSearchContacts: SubmitHandler<SearchTemplatesFormData> = async ({ search }) => {
