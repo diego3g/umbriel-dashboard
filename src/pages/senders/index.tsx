@@ -12,6 +12,9 @@ import { RiSearch2Line } from 'react-icons/ri';
 
 import { Input } from '../../components/Form/Input';
 import { useSenders } from '../../services/hooks/useSenders'
+import { useMutation } from 'react-query'
+import { api } from '../../services/api'
+import { queryClient } from '../../services/queryClient'
 
 type SearchSendersFormData = {
   search: string;
@@ -28,6 +31,23 @@ export default function Senders() {
   const handleSearchSenders: SubmitHandler<SearchSendersFormData> = async ({ search }) => {
     setPage(1)
     setSearchQuery(search);
+  };
+
+  const setDefaultSender = useMutation(
+    async (senderId: string) => {
+      const response = await api.patch(`/senders/${senderId}/set-as-default`);
+
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('senders');
+      }
+    }
+  );
+
+  const handleEditSender = async (senderId: string) => {
+    await setDefaultSender.mutateAsync(senderId);
   };
 
   return (
@@ -96,7 +116,13 @@ export default function Senders() {
                     <Text>{sender.email}</Text>
                   </Td>
                   <Td textAlign="right">
-                    <Button colorScheme="purple" disabled={sender.isDefault} size="sm" fontSize="sm">
+                    <Button
+                      colorScheme="purple"
+                      disabled={sender.isDefault}
+                      size="sm"
+                      fontSize="sm"
+                      onClick={() => handleEditSender(sender.id)}
+                    >
                       {sender.isDefault ? 'Default template' : 'Set as default'}
                     </Button>
                   </Td>
