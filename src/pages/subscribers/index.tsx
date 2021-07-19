@@ -23,7 +23,7 @@ export default function Subscribers() {
 
   const { register, handleSubmit } = useForm();
 
-  const { data } = useContacts(page, searchQuery)
+  const { data, isLoading } = useContacts(page, searchQuery)
 
   const handleSearchContacts: SubmitHandler<SearchContactsFormData> = async ({ search }) => {
     setPage(1)
@@ -70,6 +70,8 @@ export default function Subscribers() {
                 fontSize="sm"
                 colorScheme="purple"
                 ml="2"
+                disabled={isLoading}
+                isLoading={isLoading}
               >
                 <Icon as={RiSearch2Line} fontSize="16" />
               </Button>
@@ -84,8 +86,8 @@ export default function Subscribers() {
               </Tr>
             </Thead>
             <Tbody>
-              {data?.contacts.map((contact, index) => (
-                <Tr>
+              {data?.contacts.map((contact) => (
+                <Tr key={contact.id}>
                   <Td>
                     <Link color="blue.500" title="Ver detalhes">{contact.email}</Link>
                   </Td>
