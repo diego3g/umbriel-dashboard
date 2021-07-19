@@ -9,6 +9,7 @@ type Tag = {
 
 type GetTagsReponse = {
   tags: Tag[];
+  totalCount: number;
 };
 
 export async function getTags(page: number, searchQuery?: string): Promise<GetTagsReponse>  {
@@ -19,7 +20,7 @@ export async function getTags(page: number, searchQuery?: string): Promise<GetTa
     }
   });
 
-  const { data } = response;
+  const { data, totalCount } = response.data;
 
   const tags = data.map(tag => {
     return {
@@ -30,7 +31,8 @@ export async function getTags(page: number, searchQuery?: string): Promise<GetTa
   });
 
   return {
-    tags
+    tags,
+    totalCount
   };
 }
 

@@ -87,7 +87,7 @@ export default function Templates() {
             </Thead>
             <Tbody>
               {data?.templates.map(template => (
-                <Tr>
+                <Tr key={template.id}>
                   <Td>
                     <Link color="blue.500" title="Ver detalhes">{template.title}</Link>
                   </Td>

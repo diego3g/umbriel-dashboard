@@ -10,6 +10,7 @@ type Contact = {
 
 type GetContactsReponse = {
   contacts: Contact[];
+  totalCount: number;
 };
 
 export async function getContacts(page: number, searchQuery?: string): Promise<GetContactsReponse>  {
@@ -20,7 +21,7 @@ export async function getContacts(page: number, searchQuery?: string): Promise<G
     }
   });
 
-  const { data } = response;
+  const { data, totalCount } = response.data;
 
   const contacts = data.map(contact => {
     return {
@@ -38,7 +39,8 @@ export async function getContacts(page: number, searchQuery?: string): Promise<G
   });
 
   return {
-    contacts
+    contacts,
+    totalCount
   };
 }
 

@@ -11,7 +11,7 @@ type Sender = {
 
 type GetSendersReponse = {
   senders: Sender[];
-  totalCount: string;
+  totalCount: number;
 };
 
 export async function getSenders(page: number, searchQuery?: string): Promise<GetSendersReponse>  {
