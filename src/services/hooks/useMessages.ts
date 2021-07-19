@@ -1,28 +1,16 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import { api } from '../api';
 
-type Message = {
+export type Message = {
   id: string;
   subject: string;
   sentAt: string | null;
-  stats: {
-    recipientsCount: number;
-    openRate: number;
-    clickCount: number;
-    clickRate: number;
-  }
 };
 
 type GetMessagesReponse = {
   messages: Message[];
   totalCount: number;
 };
-
-async function getMessageStats(messageId: string) {
-  const response = await api.get(`/messages/${messageId}/stats`);
-
-  return response.data;
-}
 
 export async function getMessages(page: number, searchQuery?: string): Promise<GetMessagesReponse>  {
   const response = await api.get('/messages/search', {
@@ -45,8 +33,7 @@ export async function getMessages(page: number, searchQuery?: string): Promise<G
           year: 'numeric',
           hour: '2-digit',
           minute: '2-digit'
-        }): null,
-        stats: await getMessageStats(message.id)
+        }): null
       };
     })
   );

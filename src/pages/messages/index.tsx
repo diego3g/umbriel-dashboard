@@ -15,11 +15,11 @@ import { RiSearch2Line, RiAddLine } from 'react-icons/ri';
 import { Input } from '../../components/Form/Input';
 
 import Link from 'next/link'
+import { MessageItem } from '../../components/MessageItem'
 
 type SearchMessagesFormData = {
   search: string;
 };
-
 
 export default function Messages() {
   const [page, setPage] = useState(1)
@@ -105,32 +105,8 @@ export default function Messages() {
             </Thead>
             <Tbody>
               {data?.messages.map(message => (
-                <Tr key={message.id}>
-                  <Td>
-                    <Box>
-                      <Link href={`/messages/${message.id}`}>
-                        <ChakraLink
-                          title="Ver detalhes"
-                          fontSize="lg"
-                          color="blue.500"
-                        >
-                          {message.subject}
-                        </ChakraLink>
-                      </Link>
-                      {message.sentAt && (
-                        <HStack mt="3" spacing="3" divider={<StackDivider borderColor="gray.200" />}>
-                          {message.stats.recipientsCount && <Text color="gray.500">{message.stats.recipientsCount}</Text>}
-                          {message.stats.openRate && <Text color="gray.500">{message.stats.openRate}</Text>}
-                          {message.stats.clickRate && <Text color="gray.500">{message.stats.clickRate}</Text>}
-                          {message.stats.clickCount && <Text color="gray.500">{message.stats.clickCount}</Text>}
-                        </HStack>
-                      )}
-                    </Box>
-                  </Td>
-                  <Td color="gray.500">{message.sentAt || 'Not sent'}</Td>
-                </Tr>
+                <MessageItem message={message} />
               ))}
-              
             </Tbody>
           </Table>
 
