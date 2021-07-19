@@ -82,7 +82,7 @@ export default function Senders() {
             >
               <Input
                 name="search"
-                placeholder="Search contacts"
+                placeholder="Search senders"
                 {...register('search')}
               />
 

@@ -63,7 +63,7 @@ export default function Tags() {
             >
               <Input
                 name="search"
-                placeholder="Search contacts"
+                placeholder="Search tags"
                 {...register('search')}
               />
 
