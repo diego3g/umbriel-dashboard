@@ -7,7 +7,7 @@ const cookies = parseCookies();
 export const api = axios.create({
   baseURL: 'http://localhost:3333/',
   headers: {
-    Authorization: `Bearer ${cookies['umbriel-admin.token']}`
+    'x-access-token': cookies['umbriel-admin.token']
   }
 });
 
