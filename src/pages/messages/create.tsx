@@ -8,12 +8,83 @@ import { Sidebar } from '../../components/Sidebar'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Form/Input'
 import { withSSRAuth } from '../../utils/withSSRAuth'
+import { useEffect, useState } from 'react'
+import { api } from '../../services/api'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { EditorState, convertToRaw } from 'draft-js'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
 })
 
+type Sender = {
+  id: string;
+  name: string;
+  email: string;
+  isValidated: boolean;
+  isDefault: boolean;
+}
+
+type Tag = {
+  id: string;
+  title: string;
+  subscribersCount: number;
+};
+
+type SaveMessageFormData = {
+  sender: string;
+  tags: string;
+  subject: string;
+  content: EditorState;
+};
+
+
 export default function CreateMessage() {
+  const [senders, setSenders] = useState<Sender[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
+
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: {
+      sender: '',
+      tags: '',
+      subject: '',
+      content: EditorState.createEmpty(),
+    }
+  });
+
+  useEffect(() => {
+    async function loadSenders() {
+      const response = await api.get('/senders/search');
+
+      const { data } = response.data;
+
+      setSenders(data)
+    }
+
+    loadSenders()
+  }, [])
+
+  useEffect(() => {
+    async function loadTags() {
+      const response = await api.get('/tags/search');
+
+      const { data } = response.data;
+
+      setTags(data)
+    }
+
+    loadTags()
+  }, [])
+
+  const handleSaveMessage: SubmitHandler<SaveMessageFormData> = async data => {
+    const blocks = convertToRaw(data.content.getCurrentContent()).blocks;
+
+    const formattedBlocks = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
+    
+    //WIP
+    
+  };
+
   return (
     <Box>
       <Head>
@@ -26,17 +97,18 @@ export default function CreateMessage() {
         <Sidebar />
 
         <Box 
+          as="form"
           flex="1"
           ml="6"
           borderRadius={4}
           bgColor="white" 
           shadow="0 0 20px rgba(0, 0, 0, 0.05)"
           p="8"
+          onSubmit={handleSubmit(handleSaveMessage)}
         >
           <Flex mb="8" justifyContent="space-between" alignItems="center">
             <Box>
               <Heading size="lg" fontWeight="medium">Criar mensagem</Heading>
-              {/* <Text mt="1" color="gray.400"></Text> */}
             </Box>
 
             <HStack>
@@ -44,7 +116,7 @@ export default function CreateMessage() {
                 Cancelar
               </Button>
 
-              <Button size="md" leftIcon={<RiSaveLine size="24" />} colorScheme="pink">
+              <Button type="submit" size="md" leftIcon={<RiSaveLine size="24" />} colorScheme="pink">
                 Salvar
               </Button>
             </HStack>
@@ -62,12 +134,10 @@ export default function CreateMessage() {
                 <VStack spacing="6" maxWidth="4xl">
                   <FormControl id="sender">
                     <FormLabel>Quem vai enviar essa mensagem?</FormLabel>
-                    <Select size="lg" focusBorderColor="purple.500">
-                      <option selected>Diego | Rocketseat &lt;diego@rocketseat.team&gt;</option>
-                      <option>Robson | Rocketseat &lt;robson@rocketseat.team&gt;</option>
-                      <option>Cleiton | Rocketseat &lt;ciego@rocketseat.team&gt;</option>
-                      <option>Rodrigo | Rocketseat &lt;terron@rocketseat.team&gt;</option>
-                      <option>Abraão | Rocketseat &lt;abraao@rocketseat.team&gt;</option>
+                    <Select size="lg" focusBorderColor="purple.500" {...register('sender')}>
+                      {senders.map(sender => (
+                        <option>{`${sender.name} | <${sender.email}>`}</option>
+                      ))}
                     </Select>
                   </FormControl>
 
@@ -75,21 +145,15 @@ export default function CreateMessage() {
                     <FormLabel>Quem vai receber essa mensagem?</FormLabel>
                     <Flex mb="2" justifyContent="space-between" alignItems="center">
                       <Text fontSize="sm" color="gray.500">Selecione os recipientes</Text>
-                      <Text fontSize="sm" color="gray.500">
+                      {/* <Text fontSize="sm" color="gray.500">
                         <Text fontWeight="medium" color="pink.500" display="inline">400.019</Text> recipientes
-                      </Text>
+                      </Text> */}
                     </Flex>
-                    <Select h="40" icon={<span />} multiple size="lg" focusBorderColor="purple.500">
-                      <optgroup label="Segmentos">
-                        <option>[Ignite] Turma 14</option>
-                        <option>[Ignite] Turma 13</option>
-                        <option>[Ignite] Turma 12</option>
-                        <option>[Ignite] Turma 11</option>
-                      </optgroup>
+                    <Select h="40" icon={<span />} multiple size="lg" focusBorderColor="purple.500" {...register('tags')}>
                       <optgroup label="Tags">
-                        <option>Alumni</option>
-                        <option>NLW</option>
-                        <option>Time</option>
+                        {tags?.map(tag => (
+                          <option>{tag.title}</option>
+                        ))}
                       </optgroup>
                     </Select>
                   </FormControl>
@@ -99,13 +163,13 @@ export default function CreateMessage() {
                 <VStack spacing="6" maxWidth="4xl">
                   <FormControl id="sender">
                     <FormLabel>Assunto do e-mail</FormLabel>
-                    <Input name="subject" />
+                    <Input name="subject" {...register('subject')}/>
                   </FormControl>
 
                   <FormControl id="body">
                     <FormLabel>Corpo do e-mail</FormLabel>
                     <Box borderWidth={1} borderRadius={4} p="4">
-                      <TextEditor />
+                      <TextEditor name="content" control={control}/>
                     </Box>
                   </FormControl>
                 </VStack>
