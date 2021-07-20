@@ -117,9 +117,6 @@ export default function CreateMessage() {
 
     const htmlFormattedBody = draftToHtml(rawContentState)
 
-    console.log(htmlFormattedBody)
-
-
     await createOrbit.mutateAsync({
       senderId: data.sender,
       subject: data.subject,
@@ -177,8 +174,9 @@ export default function CreateMessage() {
                 <VStack spacing="6" maxWidth="4xl">
                   <FormControl id="sender">
                     <FormLabel>Quem vai enviar essa mensagem?</FormLabel>
-                    <Select size="lg" focusBorderColor="purple.500" {...register('sender')}>
-                      {senders.map(sender => (
+                    <Select defaultValue="" size="lg" focusBorderColor="purple.500" {...register('sender')}>
+                      <option disabled value="">Selecione um remetente</option>
+                      {senders.map((sender) => (
                         <option key={sender.id} value={sender.id}>{`${sender.name} | <${sender.email}>`}</option>
                       ))}
                     </Select>
