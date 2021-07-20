@@ -8,10 +8,13 @@ import { Sidebar } from '../../components/Sidebar'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Form/Input'
 import { withSSRAuth } from '../../utils/withSSRAuth'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../services/api'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { EditorState, convertToRaw } from 'draft-js'
+import { useMutation } from 'react-query'
+import { queryClient } from '../../services/queryClient'
+import draftToHtml from 'draftjs-to-html';
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -33,17 +36,25 @@ type Tag = {
 
 type SaveMessageFormData = {
   sender: string;
-  tags: string;
+  tags: string[];
   subject: string;
   content: EditorState;
 };
+
+type CreateMessageFormData = {
+  subject: string;
+  body: string;
+  templateId?: string;
+  senderId: string;
+  tags: string[];
+}
 
 
 export default function CreateMessage() {
   const [senders, setSenders] = useState<Sender[]>([])
   const [tags, setTags] = useState<Tag[]>([])
 
-  const { register, handleSubmit, control } = useForm({
+  const { register, handleSubmit, control, watch } = useForm({
     defaultValues: {
       sender: '',
       tags: '',
@@ -51,6 +62,31 @@ export default function CreateMessage() {
       content: EditorState.createEmpty(),
     }
   });
+
+  const { sender, subject, content } = watch();
+
+  const previewFormattedBodyContent = useMemo(() => {
+    if (content && content.constructor.name === "EditorState") {
+      const convertedToRawContent = convertToRaw(content.getCurrentContent());
+      
+      return draftToHtml(convertedToRawContent)
+    }      
+
+    return '';
+  }, [content])
+
+  const createOrbit = useMutation(
+    async (message: CreateMessageFormData) => {
+      const response = await api.post('/messages', message);
+
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('messages');
+      }
+    }
+  );
 
   useEffect(() => {
     async function loadSenders() {
@@ -77,12 +113,19 @@ export default function CreateMessage() {
   }, [])
 
   const handleSaveMessage: SubmitHandler<SaveMessageFormData> = async data => {
-    const blocks = convertToRaw(data.content.getCurrentContent()).blocks;
+    const rawContentState = convertToRaw(data.content.getCurrentContent());
 
-    const formattedBlocks = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
-    
-    //WIP
-    
+    const htmlFormattedBody = draftToHtml(rawContentState)
+
+    console.log(htmlFormattedBody)
+
+
+    await createOrbit.mutateAsync({
+      senderId: data.sender,
+      subject: data.subject,
+      tags: data.tags,
+      body: htmlFormattedBody
+    });
   };
 
   return (
@@ -136,7 +179,7 @@ export default function CreateMessage() {
                     <FormLabel>Quem vai enviar essa mensagem?</FormLabel>
                     <Select size="lg" focusBorderColor="purple.500" {...register('sender')}>
                       {senders.map(sender => (
-                        <option>{`${sender.name} | <${sender.email}>`}</option>
+                        <option key={sender.id} value={sender.id}>{`${sender.name} | <${sender.email}>`}</option>
                       ))}
                     </Select>
                   </FormControl>
@@ -152,7 +195,7 @@ export default function CreateMessage() {
                     <Select h="40" icon={<span />} multiple size="lg" focusBorderColor="purple.500" {...register('tags')}>
                       <optgroup label="Tags">
                         {tags?.map(tag => (
-                          <option>{tag.title}</option>
+                          <option key={tag.id} value={tag.id}>{tag.title}</option>
                         ))}
                       </optgroup>
                     </Select>
@@ -169,10 +212,20 @@ export default function CreateMessage() {
                   <FormControl id="body">
                     <FormLabel>Corpo do e-mail</FormLabel>
                     <Box borderWidth={1} borderRadius={4} p="4">
-                      <TextEditor name="content" control={control}/>
+                      <TextEditor name="content" control={control} />
                     </Box>
                   </FormControl>
                 </VStack>
+              </TabPanel>
+              <TabPanel p="0">
+                <Heading size="md" fontWeight="bold">Assunto do e-mail</Heading>
+                <Text mt="2" fontWeight="medium">{subject}</Text>
+                <Heading mt="4" size="md" fontWeight="bold">Remetente</Heading>
+                {senders.map(s => s.id === sender && (
+                  <Text mt="2">{`${s.name} | <${s.email}>`}</Text>
+                ))}
+                <Heading mt="4" size="md" fontWeight="bold">Conteúdo</Heading>
+                <Box mt="4" bg="gray.100" p="4" borderRadius="md" dangerouslySetInnerHTML={{ __html: previewFormattedBodyContent}}/>
               </TabPanel>
             </TabPanels>
           </Tabs>

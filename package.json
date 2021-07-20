@@ -26,6 +26,7 @@
     "draft-js-buttons": "^2.0.2",
     "draft-js-plugins-editor": "^3.0.0",
     "draft-js-static-toolbar-plugin": "^3.0.1",
+    "draftjs-to-html": "^0.9.1",
     "framer-motion": "^3.3.0-beta.22",
     "immutable": "^4.0.0-rc.12",
     "jwt-decode": "^3.1.2",
