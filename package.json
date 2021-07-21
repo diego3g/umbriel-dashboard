@@ -22,11 +22,11 @@
     "@unform/core": "^2.1.5",
     "@unform/web": "^2.1.5",
     "axios": "^0.21.1",
+    "draft-convert": "^2.1.11",
     "draft-js": "^0.11.7",
     "draft-js-buttons": "^2.0.2",
     "draft-js-plugins-editor": "^3.0.0",
     "draft-js-static-toolbar-plugin": "^3.0.1",
-    "draftjs-to-html": "^0.9.1",
     "framer-motion": "^3.3.0-beta.22",
     "immutable": "^4.0.0-rc.12",
     "jwt-decode": "^3.1.2",
@@ -42,6 +42,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@types/draft-convert": "^2.1.4",
     "@types/draft-js": "^0.10.44",
     "@types/node": "^14.14.22",
     "@types/react": "^17.0.0",

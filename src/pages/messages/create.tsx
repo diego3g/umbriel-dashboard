@@ -12,10 +12,10 @@ import { withSSRAuth } from '../../utils/withSSRAuth'
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../services/api'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { EditorState, convertToRaw } from 'draft-js'
+import { EditorState, convertToRaw, CompositeDecorator } from 'draft-js'
 import { useMutation } from 'react-query'
 import { queryClient } from '../../services/queryClient'
-import draftToHtml from 'draftjs-to-html';
+import { convertToHTML } from 'draft-convert';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -61,6 +61,31 @@ const createMessageFormSchema = yup.object().shape({
   })
 });
 
+const renderAsHTMLConfig = {
+  blockToHTML: (block) => {
+    if (block.type === 'unstyled') {
+      if (block.text === ' ' || block.text === '') return <br />;
+
+      const isUrlExpression = /^(?:http(s)?:\/\/)([\w.-])+(?:[\w\.-]+)+([\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.])+$/;
+
+      if (isUrlExpression.test(block.text)) {
+        return <a href={block.text}>{block.text}</a>;
+      }
+
+      return <div />;
+    }
+    if (block.type === 'PARAGRAPH') {
+      return <p />;
+    }
+  },
+  entityToHTML: (entity, originalText) => {
+    if (entity.type === 'link') {
+      return <a href={entity.data.url}>{originalText}</a>;
+    }
+    return originalText;
+  }
+}
+
 export default function CreateMessage() {
   const [senders, setSenders] = useState<Sender[]>([])
   const [tags, setTags] = useState<Tag[]>([])
@@ -81,9 +106,12 @@ export default function CreateMessage() {
 
   const previewFormattedBodyContent = useMemo(() => {
     if (content && content.constructor.name === "EditorState") {
-      const convertedToRawContent = convertToRaw(content.getCurrentContent());
-      
-      return draftToHtml(convertedToRawContent)
+      const currentContent = content.getCurrentContent();
+
+      const convertedToHtml = convertToHTML(renderAsHTMLConfig)(currentContent as any)
+      console.log(convertedToHtml)
+
+      return convertedToHtml;
     }      
 
     return '';
@@ -127,9 +155,9 @@ export default function CreateMessage() {
   }, [])
 
   const handleSaveMessage: SubmitHandler<SaveMessageFormData> = async data => {
-    const rawContentState = convertToRaw(data.content.getCurrentContent());
+    const currentContent = data.content.getCurrentContent();
 
-    const htmlFormattedBody = draftToHtml(rawContentState)
+    const htmlFormattedBody = convertToHTML(renderAsHTMLConfig)(currentContent as any)
 
     await createOrbit.mutateAsync({
       senderId: data.sender,
