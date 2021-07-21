@@ -12,12 +12,13 @@ import { withSSRAuth } from '../../utils/withSSRAuth'
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../services/api'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { EditorState, convertToRaw, CompositeDecorator } from 'draft-js'
+import { EditorState } from 'draft-js'
 import { useMutation } from 'react-query'
 import { queryClient } from '../../services/queryClient'
 import { convertToHTML } from 'draft-convert';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { TypeOfShape } from 'yup/lib/object'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -52,12 +53,14 @@ type CreateMessageFormData = {
   tags: string[];
 }
 
+type yupTestObjectValue = Record<any, any> | EditorState;
+
 const createMessageFormSchema = yup.object().shape({
   sender: yup.string().required('Remetente obrigatório'),
   tags: yup.array().of(yup.string()).nullable().required('Selecione pelo menos uma tag'),
   subject: yup.string().required('Remetente obrigatório'),
-  content: yup.object().test("has text", "Corpo do e-mail é obrigatório", (value) => {
-    return value?.getCurrentContent()?.hasText();  //boolean
+  content: yup.object().test("hasText", "Corpo do e-mail é obrigatório", (value: yupTestObjectValue) => {
+    return value?.getCurrentContent()?.hasText();
   })
 });
 
@@ -79,7 +82,7 @@ const renderAsHTMLConfig = {
     }
   },
   entityToHTML: (entity, originalText) => {
-    if (entity.type === 'link') {
+    if (entity.type === 'LINK') {
       return <a href={entity.data.url}>{originalText}</a>;
     }
     return originalText;
@@ -107,11 +110,12 @@ export default function CreateMessage() {
   const previewFormattedBodyContent = useMemo(() => {
     if (content && content.constructor.name === "EditorState") {
       const currentContent = content.getCurrentContent();
-
-      const convertedToHtml = convertToHTML(renderAsHTMLConfig)(currentContent as any)
-      console.log(convertedToHtml)
-
-      return convertedToHtml;
+      
+      if (currentContent.hasText()) {
+        const convertedToHtml = convertToHTML(renderAsHTMLConfig)(currentContent as any)
+        
+        return convertedToHtml;
+      }
     }      
 
     return '';
@@ -258,12 +262,7 @@ export default function CreateMessage() {
                 <VStack spacing="6" maxWidth="4xl">
                   <Input label="Assunto do e-mail" error={errors.subject} name="subject" {...register('subject')}/>
 
-                  <FormControl id="content">
-                    <FormLabel>Corpo do e-mail</FormLabel>
-                    <Box borderWidth={1} borderRadius={4} p="4">
-                      <TextEditor name="content" control={control} />
-                    </Box>
-                  </FormControl>
+                  <TextEditor label="Corpo do e-mail" name="content" control={control} />
                 </VStack>
               </TabPanel>
               <TabPanel p="0">
