@@ -10,6 +10,7 @@ import '@draft-js-plugins/linkify/lib/plugin.css';
 import { Controller } from 'react-hook-form'
 
 import editorStyles from '../styles/lib/draft-js/editorStyles.module.css';
+import { convertToRaw, DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 
 const emojiPlugin = createEmojiPlugin({
   useNativeArt: true,

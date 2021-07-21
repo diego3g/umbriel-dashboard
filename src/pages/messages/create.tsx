@@ -1,12 +1,13 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
-import { Box, Divider, Flex, FormControl, FormLabel, Heading, HStack, Select, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react'
+import { Box, Divider, Flex, FormControl, FormLabel, Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react'
 import { RiSaveLine } from 'react-icons/ri'
 
 import { Header } from '../../components/Header'
 import { Sidebar } from '../../components/Sidebar'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Form/Input'
+import { Select } from '../../components/Form/Select'
 import { withSSRAuth } from '../../utils/withSSRAuth'
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../services/api'
@@ -15,6 +16,8 @@ import { EditorState, convertToRaw } from 'draft-js'
 import { useMutation } from 'react-query'
 import { queryClient } from '../../services/queryClient'
 import draftToHtml from 'draftjs-to-html';
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -49,19 +52,30 @@ type CreateMessageFormData = {
   tags: string[];
 }
 
+const createMessageFormSchema = yup.object().shape({
+  sender: yup.string().required('Remetente obrigatório'),
+  tags: yup.array().of(yup.string()).nullable().required('Selecione pelo menos uma tag'),
+  subject: yup.string().required('Remetente obrigatório'),
+  content: yup.object().test("has text", "Corpo do e-mail é obrigatório", (value) => {
+    return value?.getCurrentContent()?.hasText();  //boolean
+  })
+});
 
 export default function CreateMessage() {
   const [senders, setSenders] = useState<Sender[]>([])
   const [tags, setTags] = useState<Tag[]>([])
 
-  const { register, handleSubmit, control, watch } = useForm({
+  const { register, handleSubmit, control, watch, formState } = useForm({
     defaultValues: {
       sender: '',
       tags: '',
       subject: '',
       content: EditorState.createEmpty(),
-    }
+    },
+    resolver: yupResolver(createMessageFormSchema)
   });
+
+  const { errors } = formState;
 
   const { sender, subject, content } = watch();
 
@@ -172,15 +186,19 @@ export default function CreateMessage() {
             <TabPanels>
               <TabPanel p="0">
                 <VStack spacing="6" maxWidth="4xl">
-                  <FormControl id="sender">
-                    <FormLabel>Quem vai enviar essa mensagem?</FormLabel>
-                    <Select defaultValue="" size="lg" focusBorderColor="purple.500" {...register('sender')}>
-                      <option disabled value="">Selecione um remetente</option>
-                      {senders.map((sender) => (
-                        <option key={sender.id} value={sender.id}>{`${sender.name} | <${sender.email}>`}</option>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Select
+                    label="Quem vai enviar essa mensagem?"
+                    error={errors.sender}
+                    defaultValue=""
+                    size="lg"
+                    focusBorderColor="purple.500"
+                    {...register('sender')}
+                  >
+                    <option disabled value="">Selecione um remetente</option>
+                    {senders.map((sender) => (
+                      <option key={sender.id} value={sender.id}>{`${sender.name} | <${sender.email}>`}</option>
+                    ))}
+                  </Select>
 
                   <FormControl id="recipients">
                     <FormLabel>Quem vai receber essa mensagem?</FormLabel>
@@ -190,7 +208,15 @@ export default function CreateMessage() {
                         <Text fontWeight="medium" color="pink.500" display="inline">400.019</Text> recipientes
                       </Text> */}
                     </Flex>
-                    <Select h="40" icon={<span />} multiple size="lg" focusBorderColor="purple.500" {...register('tags')}>
+                    <Select
+                      h="40"
+                      multiple
+                      icon={<span />}
+                      size="lg"
+                      focusBorderColor="purple.500"
+                      error={errors.tags}
+                      {...register('tags')}
+                    >
                       <optgroup label="Tags">
                         {tags?.map(tag => (
                           <option key={tag.id} value={tag.id}>{tag.title}</option>
@@ -202,12 +228,9 @@ export default function CreateMessage() {
               </TabPanel>
               <TabPanel p="0">
                 <VStack spacing="6" maxWidth="4xl">
-                  <FormControl id="sender">
-                    <FormLabel>Assunto do e-mail</FormLabel>
-                    <Input name="subject" {...register('subject')}/>
-                  </FormControl>
+                  <Input label="Assunto do e-mail" error={errors.subject} name="subject" {...register('subject')}/>
 
-                  <FormControl id="body">
+                  <FormControl id="content">
                     <FormLabel>Corpo do e-mail</FormLabel>
                     <Box borderWidth={1} borderRadius={4} p="4">
                       <TextEditor name="content" control={control} />
@@ -220,7 +243,7 @@ export default function CreateMessage() {
                 <Text mt="2" fontWeight="medium">{subject}</Text>
                 <Heading mt="4" size="md" fontWeight="bold">Remetente</Heading>
                 {senders.map(s => s.id === sender && (
-                  <Text mt="2">{`${s.name} | <${s.email}>`}</Text>
+                  <Text key={s.id} mt="2">{`${s.name} | <${s.email}>`}</Text>
                 ))}
                 <Heading mt="4" size="md" fontWeight="bold">Conteúdo</Heading>
                 <Box mt="4" bg="gray.100" p="4" borderRadius="md" dangerouslySetInnerHTML={{ __html: previewFormattedBodyContent}}/>
