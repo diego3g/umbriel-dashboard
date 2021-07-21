@@ -260,9 +260,19 @@ export default function CreateMessage() {
               </TabPanel>
               <TabPanel p="0">
                 <VStack spacing="6" maxWidth="4xl">
-                  <Input label="Assunto do e-mail" error={errors.subject} name="subject" {...register('subject')}/>
+                  <Input
+                    label="Assunto do e-mail"
+                    error={errors.subject}
+                    name="subject"
+                    {...register('subject')}
+                  />
 
-                  <TextEditor label="Corpo do e-mail" name="content" control={control} />
+                  <TextEditor
+                    error={errors.content}
+                    label="Corpo do e-mail"
+                    name="content"
+                    control={control}
+                  />
                 </VStack>
               </TabPanel>
               <TabPanel p="0">
