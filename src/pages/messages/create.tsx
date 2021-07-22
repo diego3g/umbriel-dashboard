@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
-import { Box, Divider, Flex, FormControl, FormLabel, Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react'
+import { Box, Divider, Flex, FormControl, FormLabel, Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useToast, VStack } from '@chakra-ui/react'
 import { RiSaveLine } from 'react-icons/ri'
 
 import { Header } from '../../components/Header'
@@ -19,6 +19,8 @@ import { convertToHTML } from 'draft-convert';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TypeOfShape } from 'yup/lib/object'
+import { useRouter } from 'next/router'
+import { AxiosError } from 'axios'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -93,6 +95,9 @@ export default function CreateMessage() {
   const [senders, setSenders] = useState<Sender[]>([])
   const [tags, setTags] = useState<Tag[]>([])
 
+  const router = useRouter()
+  const toast = useToast()
+
   const { register, handleSubmit, control, watch, formState } = useForm({
     defaultValues: {
       sender: '',
@@ -126,10 +131,29 @@ export default function CreateMessage() {
       const response = await api.post('/messages', message);
 
       return response.data;
+
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries('messages');
+
+        toast({
+          title: 'Mensagem criada com sucesso.',
+          status: 'success',
+          position: 'top',
+          duration: 3000
+        })
+
+        router.push('/messages');
+      },
+      onError: (error: AxiosError) => {
+        toast({
+          title: error?.response?.data?.error || 'Houve um erro ao cadastrar a mensagem',
+          status: 'error',
+          position: 'top',
+          duration: 3000
+        })
+
       }
     }
   );
@@ -159,16 +183,20 @@ export default function CreateMessage() {
   }, [])
 
   const handleSaveMessage: SubmitHandler<SaveMessageFormData> = async data => {
-    const currentContent = data.content.getCurrentContent();
+    try { 
+      const currentContent = data.content.getCurrentContent();
 
-    const htmlFormattedBody = convertToHTML(renderAsHTMLConfig)(currentContent as any)
+      const htmlFormattedBody = convertToHTML(renderAsHTMLConfig)(currentContent as any)
 
-    await createOrbit.mutateAsync({
-      senderId: data.sender,
-      subject: data.subject,
-      tags: data.tags,
-      body: htmlFormattedBody
-    });
+      await createOrbit.mutateAsync({
+        senderId: data.sender,
+        subject: data.subject,
+        tags: data.tags,
+        body: htmlFormattedBody
+      });
+    } catch {
+      console.log('Error happened')
+    }
   };
 
   return (
