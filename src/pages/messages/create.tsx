@@ -18,9 +18,9 @@ import { queryClient } from '../../services/queryClient'
 import { convertToHTML } from 'draft-convert';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { TypeOfShape } from 'yup/lib/object'
 import { useRouter } from 'next/router'
 import { AxiosError } from 'axios'
+import Link from 'next/link'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -40,8 +40,15 @@ type Tag = {
   subscribersCount: number;
 };
 
+type Template = {
+  id: string;
+  title: string;
+  isDefault: boolean;
+};
+
 type SaveMessageFormData = {
   sender: string;
+  template: string;
   tags: string[];
   subject: string;
   content: EditorState;
@@ -50,7 +57,7 @@ type SaveMessageFormData = {
 type CreateMessageFormData = {
   subject: string;
   body: string;
-  templateId?: string;
+  templateId: string;
   senderId: string;
   tags: string[];
 }
@@ -61,6 +68,7 @@ const createMessageFormSchema = yup.object().shape({
   sender: yup.string().required('Remetente obrigatório'),
   tags: yup.array().of(yup.string()).nullable().required('Selecione pelo menos uma tag'),
   subject: yup.string().required('Remetente obrigatório'),
+  template: yup.string().required('Template obrigatório'),
   content: yup.object().test("hasText", "Corpo do e-mail é obrigatório", (value: yupTestObjectValue) => {
     return value?.getCurrentContent()?.hasText();
   })
@@ -93,6 +101,7 @@ const renderAsHTMLConfig = {
 
 export default function CreateMessage() {
   const [senders, setSenders] = useState<Sender[]>([])
+  const [templates, setTemplates] = useState<Template[]>([])
   const [tags, setTags] = useState<Tag[]>([])
 
   const router = useRouter()
@@ -103,6 +112,7 @@ export default function CreateMessage() {
       sender: '',
       tags: '',
       subject: '',
+      template: '',
       content: EditorState.createEmpty(),
     },
     resolver: yupResolver(createMessageFormSchema)
@@ -182,6 +192,18 @@ export default function CreateMessage() {
     loadTags()
   }, [])
 
+  useEffect(() => {
+    async function loadTemplates() {
+      const response = await api.get('/templates/search');
+
+      const { data } = response.data;
+
+      setTemplates(data)
+    }
+
+    loadTemplates()
+  }, [])
+
   const handleSaveMessage: SubmitHandler<SaveMessageFormData> = async data => {
     try { 
       const currentContent = data.content.getCurrentContent();
@@ -192,7 +214,8 @@ export default function CreateMessage() {
         senderId: data.sender,
         subject: data.subject,
         tags: data.tags,
-        body: htmlFormattedBody
+        body: htmlFormattedBody,
+        templateId: data.template
       });
     } catch {
       console.log('Error happened')
@@ -226,9 +249,11 @@ export default function CreateMessage() {
             </Box>
 
             <HStack>
-              <Button size="md" colorScheme="blackAlpha">
-                Cancelar
-              </Button>
+              <Link href="/messages">
+                <Button size="md" colorScheme="blackAlpha">
+                  Cancelar
+                </Button>
+              </Link>
 
               <Button type="submit" size="md" leftIcon={<RiSaveLine size="24" />} colorScheme="pink">
                 Salvar
@@ -257,6 +282,20 @@ export default function CreateMessage() {
                     <option disabled value="">Selecione um remetente</option>
                     {senders.map((sender) => (
                       <option key={sender.id} value={sender.id}>{`${sender.name} | <${sender.email}>`}</option>
+                    ))}
+                  </Select>
+
+                  <Select
+                    label="Selecione o template que vai ser utilizado"
+                    error={errors.sender}
+                    defaultValue=""
+                    size="lg"
+                    focusBorderColor="purple.500"
+                    {...register('template')}
+                  >
+                    <option disabled value="">Selecione um template</option>
+                    {templates.map((template) => (
+                      <option key={template.id} value={template.id}>{template.title}</option>
                     ))}
                   </Select>
 
