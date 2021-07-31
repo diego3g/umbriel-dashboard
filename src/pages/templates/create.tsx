@@ -91,7 +91,7 @@ export default function CreateTemplate() {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('messages');
+        queryClient.invalidateQueries('templates');
 
         toast({
           title: 'Template criado com sucesso.',
@@ -100,7 +100,7 @@ export default function CreateTemplate() {
           duration: 3000
         })
 
-        router.push('/messages');
+        router.push('/templates');
       },
       onError: (error: AxiosError) => {
         toast({
@@ -114,7 +114,7 @@ export default function CreateTemplate() {
     }
   );
 
-  const handleSaveMessage: SubmitHandler<SaveTemplateFormData> = async data => {
+  const handleSaveTemplate: SubmitHandler<SaveTemplateFormData> = async data => {
     try { 
       const currentContent = data.content.getCurrentContent();
 
@@ -148,7 +148,7 @@ export default function CreateTemplate() {
           bgColor="white" 
           shadow="0 0 20px rgba(0, 0, 0, 0.05)"
           p="8"
-          onSubmit={handleSubmit(handleSaveMessage)}
+          onSubmit={handleSubmit(handleSaveTemplate)}
         >
           <Flex mb="8" justifyContent="space-between" alignItems="center">
             <Box>
@@ -156,7 +156,7 @@ export default function CreateTemplate() {
             </Box>
 
             <HStack>
-              <Link href="/messages">
+              <Link href="/templates">
                 <Button size="md" colorScheme="blackAlpha">
                   Cancelar
                 </Button>
