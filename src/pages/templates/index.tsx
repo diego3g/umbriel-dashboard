@@ -14,7 +14,7 @@ import { useTemplates } from '../../services/hooks/useTemplates'
 import { Input } from '../../components/Form/Input';
 import { queryClient } from '../../services/queryClient';
 import { useMutation } from 'react-query';
-import { api } from '../../services/api';
+import { api } from '../../services/apiClient';
 
 type SearchTemplatesFormData = {
   search: string;

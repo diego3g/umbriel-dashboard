@@ -14,7 +14,7 @@ export function MessageItem({ message }: MessageItemProps) {
     <Tr key={message.id}>
       <Td>
         <Box>
-          <Link href={`/messages/${message.id}`}>
+          <Link href={`/messages/${message.id}`} passHref>
             <ChakraLink
               title="Ver detalhes"
               fontSize="lg"

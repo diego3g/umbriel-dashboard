@@ -13,7 +13,7 @@ import { RiAddLine, RiSearch2Line } from 'react-icons/ri';
 import { Input } from '../../components/Form/Input';
 import { useSenders } from '../../services/hooks/useSenders'
 import { useMutation } from 'react-query'
-import { api } from '../../services/api'
+import { api } from '../../services/apiClient'
 import { queryClient } from '../../services/queryClient'
 import { Pagination } from '../../components/Pagination'
 

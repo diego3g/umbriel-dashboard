@@ -10,7 +10,7 @@ import { Input } from '../../components/Form/Input'
 import { Select } from '../../components/Form/Select'
 import { withSSRAuth } from '../../utils/withSSRAuth'
 import { useEffect, useMemo, useState } from 'react'
-import { api } from '../../services/api'
+import { api } from '../../services/apiClient'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { EditorState } from 'draft-js'
 import { useMutation } from 'react-query'
@@ -165,7 +165,6 @@ export default function CreateMessage() {
           position: 'top',
           duration: 3000
         })
-
       }
     }
   );

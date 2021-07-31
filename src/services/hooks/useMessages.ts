@@ -1,5 +1,5 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { api } from '../api';
+import { api } from '../apiClient';
 
 export type Message = {
   id: string;

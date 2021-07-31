@@ -1,5 +1,5 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { api } from '../api';
+import { api } from '../apiClient';
 
 type Tag = {
   id: string;
