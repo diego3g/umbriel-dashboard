@@ -92,7 +92,6 @@ export default function Messages() {
                   <Icon as={RiAddLine} />
                 </Button>
               </Link>
-              
             </Flex>
           </Flex>
 

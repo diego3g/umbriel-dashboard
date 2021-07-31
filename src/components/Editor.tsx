@@ -4,12 +4,29 @@ import createLinkifyPlugin from '@draft-js-plugins/linkify';
 
 import { FormControl, FormLabel, Box, FormErrorMessage, Text } from '@chakra-ui/react'
 
+import createLinkPlugin from '@draft-js-plugins/anchor';
+import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
+
+import {
+  ItalicButton,
+  BoldButton,
+  UnderlineButton,
+} from '@draft-js-plugins/buttons';
+
+const linkPlugin = createLinkPlugin();
+
+const inlineToolbarPlugin = createInlineToolbarPlugin();
+
+const { InlineToolbar } = inlineToolbarPlugin;
+
 import 'draft-js/dist/Draft.css';
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import '@draft-js-plugins/emoji/lib/plugin.css';
 import '@draft-js-plugins/linkify/lib/plugin.css';
+import '@draft-js-plugins/anchor/lib/plugin.css';
+import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
 
-import { Controller } from 'react-hook-form'
+import { Controller, Control } from 'react-hook-form'
 
 import editorStyles from '../styles/lib/draft-js/editorStyles.module.css';
 
@@ -21,7 +38,17 @@ const linkifyPlugin = createLinkifyPlugin();
 
 const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
 
-export default function Editor({ name, control, label, description, error }) {
+type FormValues = any;
+
+type EditorProps = {
+  name: string;
+  control: Control<FormValues>;
+  label?: string;
+  description?: string;
+  error?: any; 
+}
+
+export default function Editor({ name, control, label, description, error }: EditorProps) {
   return (
     <FormControl id={name} isInvalid={!!error}>
       {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
@@ -37,10 +64,22 @@ export default function Editor({ name, control, label, description, error }) {
               <DraftEditor
                 editorState={value}
                 onChange={onChange}
-                plugins={[emojiPlugin, linkifyPlugin]}
+                plugins={[emojiPlugin, linkifyPlugin, inlineToolbarPlugin, linkPlugin ]}
               />
               <EmojiSuggestions />
               <EmojiSelect />
+              <InlineToolbar>
+                {
+                  (externalProps) => (
+                    <>
+                      <BoldButton {...externalProps} />
+                      <ItalicButton {...externalProps} />
+                      <UnderlineButton {...externalProps} />
+                      <linkPlugin.LinkButton {...externalProps} />
+                    </>
+                  )
+                }
+              </InlineToolbar>
             </div>
           )}
           />

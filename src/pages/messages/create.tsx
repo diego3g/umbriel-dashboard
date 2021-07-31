@@ -22,6 +22,8 @@ import { useRouter } from 'next/router'
 import { AxiosError } from 'axios'
 import Link from 'next/link'
 
+import styles from '../../styles/lib/draft-js/previewStyles.module.css'
+
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
 })
@@ -350,7 +352,7 @@ export default function CreateMessage() {
                   <Text key={s.id} mt="2">{`${s.name} | <${s.email}>`}</Text>
                 ))}
                 <Heading mt="4" size="md" fontWeight="bold">Conteúdo</Heading>
-                <Box mt="4" bg="gray.100" p="4" borderRadius="md" dangerouslySetInnerHTML={{ __html: previewFormattedBodyContent}}/>
+                <Box mt="4" bg="gray.100" p="4" borderRadius="md" className={styles.preview} dangerouslySetInnerHTML={{ __html: previewFormattedBodyContent}}/>
               </TabPanel>
             </TabPanels>
           </Tabs>
