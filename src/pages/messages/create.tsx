@@ -136,7 +136,7 @@ export default function CreateMessage() {
     return '';
   }, [content])
 
-  const createOrbit = useMutation(
+  const createMessage = useMutation(
     async (message: CreateMessageFormData) => {
       const response = await api.post('/messages', message);
 
@@ -210,7 +210,7 @@ export default function CreateMessage() {
 
       const htmlFormattedBody = convertToHTML(renderAsHTMLConfig)(currentContent as any)
 
-      await createOrbit.mutateAsync({
+      await createMessage.mutateAsync({
         senderId: data.sender,
         subject: data.subject,
         tags: data.tags,
