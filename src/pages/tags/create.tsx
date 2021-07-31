@@ -17,53 +17,50 @@ import { useRouter } from 'next/router'
 import { AxiosError } from 'axios'
 import Link from 'next/link'
 
-type CreateSenderFormData = {
-  name: string;
-  email: string;
+type CreateTagFormData = {
+  title: string;
 }
 
-const createSenderFormSchema = yup.object().shape({
-  name: yup.string().required('O nome é obrigatório'),
-  email: yup.string().email('Precisa ser um e-mail').required('Email obrigatório'),
+const createTagFormSchema = yup.object().shape({
+  title: yup.string().required('O título é obrigatório'),
 });
 
-export default function CreateSender() {
+export default function CreateTag() {
   const router = useRouter()
   const toast = useToast()
 
   const { register, handleSubmit, formState } = useForm({
     defaultValues: {
-      name: '',
-      email: '',
+      title: '',
     },
-    resolver: yupResolver(createSenderFormSchema)
+    resolver: yupResolver(createTagFormSchema)
   });
 
   const { errors } = formState;
 
-  const createSender = useMutation(
-    async (sender: CreateSenderFormData) => {
-      const response = await api.post('/senders', sender);
+  const createTag = useMutation(
+    async (tag: CreateTagFormData) => {
+      const response = await api.post('/tags', tag);
 
       return response.data;
 
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('senders');
+        queryClient.invalidateQueries('tags');
 
         toast({
-          title: 'Remetente criado com sucesso.',
+          title: 'Tag criada com sucesso.',
           status: 'success',
           position: 'top',
           duration: 3000
         })
 
-        router.push('/senders');
+        router.push('/tags');
       },
       onError: (error: AxiosError) => {
         toast({
-          title: error?.response?.data?.error || 'Houve um erro ao criar o remetente',
+          title: error?.response?.data?.error || 'Houve um erro ao criar a tag',
           status: 'error',
           position: 'top',
           duration: 3000
@@ -72,11 +69,10 @@ export default function CreateSender() {
     }
   );
 
-  const handleSaveSender: SubmitHandler<CreateSenderFormData> = async data => {
+  const handleSaveTag: SubmitHandler<CreateTagFormData> = async data => {
     try {
-      await createSender.mutateAsync({
-        name: data.name,
-        email: data.email,
+      await createTag.mutateAsync({
+        title: data.title,
       });
     } catch {
       console.log('Error happened')
@@ -86,7 +82,7 @@ export default function CreateSender() {
   return (
     <Box>
       <Head>
-        <title>Criar remetente | Umbriel</title>
+        <title>Criar tag | Umbriel</title>
       </Head>
 
       <Header />
@@ -102,15 +98,15 @@ export default function CreateSender() {
           bgColor="white" 
           shadow="0 0 20px rgba(0, 0, 0, 0.05)"
           p="8"
-          onSubmit={handleSubmit(handleSaveSender)}
+          onSubmit={handleSubmit(handleSaveTag)}
         >
           <Flex mb="8" justifyContent="space-between" alignItems="center">
             <Box>
-              <Heading size="lg" fontWeight="medium">Criar remetente</Heading>
+              <Heading size="lg" fontWeight="medium">Criar tag</Heading>
             </Box>
 
             <HStack>
-              <Link href="/senders">
+              <Link href="/tags">
                 <Button size="md" colorScheme="blackAlpha">
                   Cancelar
                 </Button>
@@ -123,17 +119,10 @@ export default function CreateSender() {
           </Flex>
           <VStack spacing="6" maxWidth="4xl">
             <Input
-              label="Nome do remetente"
-              error={errors.name}
-              name="name"
-              {...register('name')}
-            />
-
-            <Input
-              label="Email do remetente"
-              error={errors.email}
-              name="email"
-              {...register('email')}
+              label="Título da tag"
+              error={errors.title}
+              name="title"
+              {...register('title')}
             />
           </VStack>
         </Box>
