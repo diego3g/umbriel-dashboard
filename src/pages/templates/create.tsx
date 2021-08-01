@@ -10,23 +10,21 @@ import { Input } from '../../components/Form/Input'
 import { withSSRAuth } from '../../utils/withSSRAuth'
 import { api } from '../../services/apiClient'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { ContentState, EditorState } from 'draft-js'
 import { useMutation } from 'react-query'
 import { queryClient } from '../../services/queryClient'
-import { convertToHTML } from 'draft-convert';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { AxiosError } from 'axios'
 import Link from 'next/link'
 
-const TextEditor = dynamic(() => import("../../components/Editor"), {
+const CodeEditor = dynamic(() => import("../../components/CodeEditor"), {
   ssr: false,
 })
 
 type SaveTemplateFormData = {
   title: string;
-  content: EditorState;
+  content: string;
 };
 
 type CreateTemplateFormData = {
@@ -34,39 +32,13 @@ type CreateTemplateFormData = {
   content: string;
 }
 
-type yupTestObjectValue = Record<any, any> | EditorState;
-
 const createTemplateFormSchema = yup.object().shape({
   title: yup.string().required('Remetente obrigatório'),
-  content: yup.object().test("hasText", "O conteúdo é obrigatório", (value: yupTestObjectValue) => {
-    return value?.getCurrentContent()?.hasText();
-  })
+  content: yup.string().test('hasMessageContent', 'Necessário ter a variável {{ message_content }} no conteúdo', (value) => {
+    return value.includes('{{ message_content }}')
+  }).required('Conteúdo obrigatório'),
 });
 
-const renderAsHTMLConfig = {
-  blockToHTML: (block) => {
-    if (block.type === 'unstyled') {
-      if (block.text === ' ' || block.text === '') return <br />;
-
-      const isUrlExpression = /^(?:http(s)?:\/\/)([\w.-])+(?:[\w\.-]+)+([\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.])+$/;
-
-      if (isUrlExpression.test(block.text)) {
-        return <a href={block.text}>{block.text}</a>;
-      }
-
-      return <div />;
-    }
-    if (block.type === 'PARAGRAPH') {
-      return <p />;
-    }
-  },
-  entityToHTML: (entity, originalText) => {
-    if (entity.type === 'LINK') {
-      return <a href={entity.data.url}>{originalText}</a>;
-    }
-    return originalText;
-  }
-}
 
 export default function CreateTemplate() {
   const router = useRouter()
@@ -75,7 +47,7 @@ export default function CreateTemplate() {
   const { register, handleSubmit, control, formState } = useForm({
     defaultValues: {
       title: '',
-      content: EditorState.createWithContent(ContentState.createFromText('{{ message_content }}')),
+      content: '{{ message_content }}',
     },
     resolver: yupResolver(createTemplateFormSchema)
   });
@@ -116,13 +88,9 @@ export default function CreateTemplate() {
 
   const handleSaveTemplate: SubmitHandler<SaveTemplateFormData> = async data => {
     try { 
-      const currentContent = data.content.getCurrentContent();
-
-      const htmlFormattedBody = convertToHTML(renderAsHTMLConfig)(currentContent as any)
-
       await createTemplate.mutateAsync({
         title: data.title,
-        content: htmlFormattedBody,
+        content: data.content,
       });
     } catch {
       console.log('Error happened')
@@ -175,7 +143,7 @@ export default function CreateTemplate() {
               {...register('title')}
             />
 
-            <TextEditor
+            <CodeEditor
               error={errors.content}
               label="Conteúdo"
               description="Inclua {{ message_content }} para injetar o conteúdo da mensagem"
