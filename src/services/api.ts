@@ -6,7 +6,7 @@ export function setupApiClient(ctx = undefined){
   const cookies = parseCookies(ctx);
 
   const api = axios.create({
-    baseURL: 'http://localhost:3333/',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333/',
     headers: {
       'x-access-token': cookies['umbriel-admin.token']
     }
