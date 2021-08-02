@@ -9,7 +9,7 @@ import { useContacts } from '../../services/hooks/useContacts'
 
 import { Input } from '../../components/Form/Input';
 
-import { RiSearch2Line } from 'react-icons/ri';
+import { RiAddLine, RiSearch2Line } from 'react-icons/ri';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Pagination } from '../../components/Pagination'
@@ -56,26 +56,40 @@ export default function Subscribers() {
               <Text mt="1" color="gray.400">Listagem completa de inscritos</Text>
             </Box>
 
-            <Flex 
-              as="form" 
-              onSubmit={handleSubmit(handleSearchContacts)}
-            >
-              <Input
-                name="search"
-                placeholder="Buscar contatos"
-                {...register('search')}
-              />
+            <Flex>
 
-              <Button
-                size="lg"
-                fontSize="sm"
-                colorScheme="purple"
-                ml="2"
-                disabled={isLoading}
-                isLoading={isLoading}
+              <Flex 
+                as="form" 
+                onSubmit={handleSubmit(handleSearchContacts)}
               >
-                <Icon as={RiSearch2Line} fontSize="16" />
-              </Button>
+                <Input
+                  name="search"
+                  placeholder="Buscar contatos"
+                  {...register('search')}
+                />
+
+                <Button
+                  size="lg"
+                  fontSize="sm"
+                  colorScheme="purple"
+                  ml="2"
+                  disabled={isLoading}
+                  isLoading={isLoading}
+                >
+                  <Icon as={RiSearch2Line} fontSize="16" />
+                </Button>
+              </Flex>
+              <Link href="/subscribers/create">
+                <Button
+                  size="lg"
+                  fontSize="xl"
+                  colorScheme="purple"
+                  ml="2"
+                  maxW={59}
+                >
+                  <Icon as={RiAddLine} />
+                </Button>
+              </Link>
             </Flex>
           </Flex>
 
