@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { Box, Flex, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Link, Icon } from '@chakra-ui/react'
-import { RiSearch2Line } from 'react-icons/ri';
+import { RiAddLine, RiSearch2Line } from 'react-icons/ri';
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
@@ -14,7 +14,7 @@ import { useTemplates } from '../../services/hooks/useTemplates'
 import { Input } from '../../components/Form/Input';
 import { queryClient } from '../../services/queryClient';
 import { useMutation } from 'react-query';
-import { api } from '../../services/api';
+import { api } from '../../services/apiClient';
 
 type SearchTemplatesFormData = {
   search: string;
@@ -75,28 +75,42 @@ export default function Templates() {
               <Text mt="1" color="gray.400">Listagem completa de templates</Text>
             </Box>
 
-            <Flex 
-              as="form" 
-              onSubmit={handleSubmit(handleSearchContacts)}
-            >
-              <Input
-                name="search"
-                placeholder="Search templates"
-                {...register('search')}
-              />
-
-              <Button
-                size="lg"
-                fontSize="sm"
-                colorScheme="purple"
-                ml="2"
-                disabled={isLoading}
-                isLoading={isLoading}
+            <Flex>
+              <Flex 
+                as="form" 
+                onSubmit={handleSubmit(handleSearchContacts)}
               >
-                <Icon as={RiSearch2Line} fontSize="16" />
-              </Button>
+                <Input
+                  name="search"
+                  placeholder="Search templates"
+                  {...register('search')}
+                />
+
+                <Button
+                  size="lg"
+                  fontSize="sm"
+                  colorScheme="purple"
+                  ml="2"
+                  disabled={isLoading}
+                  isLoading={isLoading}
+                >
+                  <Icon as={RiSearch2Line} fontSize="16" />
+                </Button>
+              </Flex>
+              <Link href="/templates/create">
+                <Button
+                  size="lg"
+                  fontSize="xl"
+                  colorScheme="purple"
+                  ml="2"
+                  maxW={59}
+                >
+                  <Icon as={RiAddLine} />
+                </Button>
+              </Link>
             </Flex>
           </Flex>
+
 
           <Table>
             <Thead>

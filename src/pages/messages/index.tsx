@@ -1,12 +1,39 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, HStack, Table, Tag, Tbody, Td, Text, Th, Thead, Tr, Link, StackDivider } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, Table, Icon, Tbody, Td, Text, Th, Thead, Tr, Link as ChakraLink, StackDivider } from '@chakra-ui/react'
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
 import { Button } from '../../components/Button'
 import { withSSRAuth } from '../../utils/withSSRAuth'
+import { Pagination } from '../../components/Pagination'
+import { useMessages } from '../../services/hooks/useMessages'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
+import { RiSearch2Line, RiAddLine } from 'react-icons/ri';
+
+import { Input } from '../../components/Form/Input';
+
+import Link from 'next/link'
+import { MessageItem } from '../../components/MessageItem'
+
+type SearchMessagesFormData = {
+  search: string;
+};
 
 export default function Messages() {
+  const [page, setPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const { register, handleSubmit } = useForm();
+
+  const { data, isLoading } = useMessages(page, searchQuery)
+
+  const handleSearchMessages: SubmitHandler<SearchMessagesFormData> = async ({ search }) => {
+    setPage(1)
+    setSearchQuery(search);
+  };
+
   return (
     <Box>
       <Head>
@@ -31,6 +58,41 @@ export default function Messages() {
               <Heading size="lg" fontWeight="medium">Mensagens</Heading>
               <Text mt="1" color="gray.400">Listagem completa de mensagens</Text>
             </Box>
+
+            <Flex>
+              <Flex 
+                as="form" 
+                onSubmit={handleSubmit(handleSearchMessages)}
+              >
+                <Input
+                  name="search"
+                  placeholder="Search messages"
+                  {...register('search')}
+                />
+
+                <Button
+                  size="lg"
+                  fontSize="sm"
+                  colorScheme="purple"
+                  ml="2"
+                  disabled={isLoading}
+                  isLoading={isLoading}
+                >
+                  <Icon as={RiSearch2Line} />
+                </Button>
+              </Flex>
+              <Link href="/messages/create">
+                <Button
+                  size="lg"
+                  fontSize="xl"
+                  colorScheme="purple"
+                  ml="2"
+                  maxW={59}
+                >
+                  <Icon as={RiAddLine} />
+                </Button>
+              </Link>
+            </Flex>
           </Flex>
 
           <Table>
@@ -41,68 +103,17 @@ export default function Messages() {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>
-                  <Box>
-                    <Link
-                      title="Ver detalhes"
-                      fontSize="lg"
-                      color="blue.500"
-                    >
-                      Nova parceria na Rocketseat
-                    </Link>
-                    <HStack mt="3" spacing="3" divider={<StackDivider borderColor="gray.200" />}>
-                      <Text color="gray.500">214K Recipients</Text>
-                      <Text color="gray.500">19.2% Open Rate</Text>
-                      <Text color="gray.500">3.8% Click Rate</Text>
-                      <Text color="gray.500">9,273 Clicks</Text>
-                      <Text color="gray.500">469 Unsubscribers</Text>
-                    </HStack>
-                  </Box>
-                </Td>
-                <Td color="gray.500">04 de Abril, 2021</Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Box>
-                    <Link
-                      title="Ver detalhes"
-                      fontSize="lg"
-                      color="blue.500"
-                    >
-                      [Ignite] Aqui está sua primeira conquista
-                    </Link>
-                    <HStack mt="3" spacing="3" divider={<StackDivider borderColor="gray.200" />}>
-                      <Text color="gray.500">214K Recipients</Text>
-                      <Text color="gray.500">19.2% Open Rate</Text>
-                      <Text color="gray.500">3.8% Click Rate</Text>
-                      <Text color="gray.500">9,273 Clicks</Text>
-                      <Text color="gray.500">469 Unsubscribers</Text>
-                    </HStack>
-                  </Box>
-                </Td>
-                <Td color="gray.500">04 de Abril, 2021</Td>
-              </Tr>
+              {data?.messages.map(message => (
+                <MessageItem message={message} />
+              ))}
             </Tbody>
           </Table>
 
-          <Flex mt="8" justifyContent="space-between" alignItems="center">
-            <Box>
-              <Text fontSize="md" color="gray.600">
-                <strong>1</strong> - <strong>20</strong> de <strong>48</strong>
-              </Text>
-            </Box>
-
-            <HStack spacing="2">
-              <Button size="md" width="4">1</Button>
-              <Button size="md" width="4" bgColor="gray.300">2</Button>
-              <Button size="md" width="4" bgColor="gray.300">3</Button>
-              <Button size="md" width="4" bgColor="gray.300">4</Button>
-              <Text color="gray.500" px="2">...</Text>
-              <Button size="md" width="4" bgColor="gray.300">67</Button>
-              <Button size="md" width="4" bgColor="gray.300">68</Button>
-            </HStack>
-          </Flex>
+          <Pagination 
+            totalCountOfRegisters={data?.totalCount}
+            currentPage={page}
+            onPageChange={setPage}
+          /> 
         </Box>
       </Flex>
     </Box>

@@ -2,8 +2,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import Router from 'next/router';
 import { destroyCookie, setCookie } from 'nookies';
-import { api } from '../services/api';
-import decode from 'jwt-decode';
+import { api } from '../services/apiClient';
 
 type User = {
   email: string;

@@ -8,7 +8,7 @@ import { withSSRAuth } from '../../utils/withSSRAuth'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { RiSearch2Line } from 'react-icons/ri';
+import { RiAddLine, RiSearch2Line } from 'react-icons/ri';
 
 import { Input } from '../../components/Form/Input';
 import { useTags } from '../../services/hooks/useTags'
@@ -57,26 +57,39 @@ export default function Tags() {
               <Text mt="1" color="gray.400">Listagem completa de tags</Text>
             </Box>
 
-            <Flex 
-              as="form" 
-              onSubmit={handleSubmit(handleSearchTags)}
-            >
-              <Input
-                name="search"
-                placeholder="Search tags"
-                {...register('search')}
-              />
-
-              <Button
-                size="lg"
-                fontSize="sm"
-                colorScheme="purple"
-                ml="2"
-                disabled={isLoading}
-                isLoading={isLoading}
+            <Flex>
+              <Flex 
+                as="form" 
+                onSubmit={handleSubmit(handleSearchTags)}
               >
-                <Icon as={RiSearch2Line} fontSize="16" />
-              </Button>
+                <Input
+                  name="search"
+                  placeholder="Search tags"
+                  {...register('search')}
+                />
+
+                <Button
+                  size="lg"
+                  fontSize="sm"
+                  colorScheme="purple"
+                  ml="2"
+                  disabled={isLoading}
+                  isLoading={isLoading}
+                >
+                  <Icon as={RiSearch2Line} fontSize="16" />
+                </Button>
+              </Flex>
+              <Link href="/tags/create">
+                <Button
+                  size="lg"
+                  fontSize="xl"
+                  colorScheme="purple"
+                  ml="2"
+                  maxW={59}
+                >
+                  <Icon as={RiAddLine} />
+                </Button>
+              </Link>
             </Flex>
           </Flex>
 
