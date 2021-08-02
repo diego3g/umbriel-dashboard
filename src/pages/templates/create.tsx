@@ -33,7 +33,7 @@ type CreateTemplateFormData = {
 }
 
 const createTemplateFormSchema = yup.object().shape({
-  title: yup.string().required('Remetente obrigatório'),
+  title: yup.string().required('Título obrigatório'),
   content: yup.string().test('hasMessageContent', 'Necessário ter a variável {{ message_content }} no conteúdo', (value) => {
     return value.includes('{{ message_content }}')
   }).required('Conteúdo obrigatório'),

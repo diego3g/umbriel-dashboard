@@ -62,7 +62,7 @@ export default function Subscribers() {
             >
               <Input
                 name="search"
-                placeholder="Search contacts"
+                placeholder="Buscar contatos"
                 {...register('search')}
               />
 

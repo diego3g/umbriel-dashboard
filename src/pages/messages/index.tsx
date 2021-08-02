@@ -66,7 +66,7 @@ export default function Messages() {
               >
                 <Input
                   name="search"
-                  placeholder="Search messages"
+                  placeholder="Buscar mensagens"
                   {...register('search')}
                 />
 

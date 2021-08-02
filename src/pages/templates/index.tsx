@@ -82,7 +82,7 @@ export default function Templates() {
               >
                 <Input
                   name="search"
-                  placeholder="Search templates"
+                  placeholder="Buscar templates"
                   {...register('search')}
                 />
 
@@ -134,7 +134,7 @@ export default function Templates() {
                       fontSize="sm"
                       onClick={() => handleSetDefaultTemplate(template.id)}
                     >
-                      {template.isDefault ? 'Default template' : 'Set as default'}
+                      {template.isDefault ? 'Definido como padrão' : 'Definir como padrão'}
                     </Button>
                   </Td>
                 </Tr>

@@ -83,7 +83,7 @@ export default function Senders() {
               >
                 <Input
                   name="search"
-                  placeholder="Search senders"
+                  placeholder="Buscar remetentes"
                   {...register('search')}
                 />
 
@@ -138,7 +138,7 @@ export default function Senders() {
                       fontSize="sm"
                       onClick={() => handleEditSender(sender.id)}
                     >
-                      {sender.isDefault ? 'Default template' : 'Set as default'}
+                      {sender.isDefault ? 'Definido como padrão' : 'Definir como padrão'}
                     </Button>
                   </Td>
                 </Tr>

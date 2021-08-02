@@ -43,8 +43,8 @@ export default function SignIn() {
       <Flex w="100vw" h="100vh" alignItems="center" justifyContent="center" flexDirection={['column', 'row']}>
         <Stack p={[6, 8]} spacing="4" mr={[0, 0, 0, 100]}>
           <Logo />
-          <Text color="gray.900" letterSpacing="tight" lineHeight="normal" fontSize={["3xl","5xl"]} mb="8" fontWeight="extrabold" maxW={400}>
-            Sign In to access the dashboard
+          <Text color="gray.900" letterSpacing="tight" lineHeight="normal" fontSize={["3xl","5xl"]} mb="8" fontWeight="extrabold" maxW={430}>
+            Faça login para acessar a dashboard
           </Text>
         </Stack>
         <Flex
@@ -60,14 +60,14 @@ export default function SignIn() {
             <Input
               name="email"
               type="email"
-              placeholder="Enter email"
+              placeholder="Seu email"
               {...register('email')}
               error={errors.email}
             />
             <Input
               name="password"
               type="password"
-              placeholder="Password"
+              placeholder="Senha"
               {...register('password')}
               error={errors.password}
             />
@@ -83,7 +83,7 @@ export default function SignIn() {
           </Button>
           <Link href="/forgot-password" passHref>
             <ChakraLink alignSelf="center" mt="4">
-              <Text color="gray.500">Password recovery</Text>
+              <Text color="gray.500">Esqueci minha senha</Text>
             </ChakraLink>
           </Link>
         </Flex>
