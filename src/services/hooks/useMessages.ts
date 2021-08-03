@@ -27,7 +27,7 @@ export async function getMessages(page: number, searchQuery?: string): Promise<G
       return {
         id: message.id,
         subject: message.subject,
-        sentAt: message.sentAt !== null ? new Date(message.sentAt).toLocaleDateString('en-us', {
+        sentAt: message.sentAt !== null ? new Date(message.sentAt).toLocaleDateString('pt-br', {
           day: '2-digit',
           month: 'long',
           year: 'numeric',
