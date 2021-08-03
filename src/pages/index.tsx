@@ -63,6 +63,7 @@ export default function SignIn() {
               placeholder="Seu email"
               {...register('email')}
               error={errors.email}
+              bg="gray.100"
             />
             <Input
               name="password"
@@ -70,6 +71,7 @@ export default function SignIn() {
               placeholder="Senha"
               {...register('password')}
               error={errors.password}
+              bg="gray.100"
             />
           </Stack>
           <Button
