@@ -87,8 +87,9 @@ const renderAsHTMLConfig = {
         return <a href={block.text}>{block.text}</a>;
       }
 
-      return <div />;
+      return <p />;
     }
+    
     if (block.type === 'PARAGRAPH') {
       return <p />;
     }
@@ -171,7 +172,7 @@ export default function CreateMessage() {
 
   useEffect(() => {
     async function loadSenders() {
-      const response = await api.get('/senders/search');
+      const response = await api.get('/senders');
 
       const { data } = response.data;
 
@@ -183,7 +184,7 @@ export default function CreateMessage() {
 
   useEffect(() => {
     async function loadTags() {
-      const response = await api.get('/tags/search');
+      const response = await api.get('/tags');
 
       const { data } = response.data;
 
@@ -195,7 +196,7 @@ export default function CreateMessage() {
 
   useEffect(() => {
     async function loadTemplates() {
-      const response = await api.get('/templates/search');
+      const response = await api.get('/templates');
 
       const { data } = response.data;
 
