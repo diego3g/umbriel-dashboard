@@ -28,7 +28,7 @@ export async function getContacts(page: number, searchQuery?: string): Promise<G
       id: contact.id,
       name: contact.name,
       email: contact.email,
-      createdAt: new Date(contact.created_at).toLocaleDateString('en-us', {
+      createdAt: new Date(contact.created_at).toLocaleDateString('pt-br', {
         day: '2-digit',
         month: 'long',
         year: 'numeric',

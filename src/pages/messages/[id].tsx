@@ -76,7 +76,7 @@ export default function MessageDetails({ message }: MessageDetailsProps) {
   return (
     <Box>
       <Head>
-        <title>Criar mensagem | Umbriel</title>
+        <title>Detalhes da mensagem | Umbriel</title>
       </Head>
 
       <Header />

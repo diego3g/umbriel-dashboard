@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Box, Flex, Heading, HStack, Table, Tbody, Td, Text, Th, Thead, Tr, Link, Icon } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, Table, Tbody, Td, Text, Th, Thead, Tr, Link as ChakraLink, Icon } from '@chakra-ui/react'
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
@@ -13,6 +13,8 @@ import { RiAddLine, RiSearch2Line } from 'react-icons/ri';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Pagination } from '../../components/Pagination'
+
+import Link from 'next/link'
 
 type SearchContactsFormData = {
   search: string;
@@ -104,7 +106,15 @@ export default function Subscribers() {
               {data?.contacts.map((contact) => (
                 <Tr key={contact.id}>
                   <Td>
-                    <Link color="blue.500" title="Ver detalhes">{contact.email}</Link>
+                    <Link
+                      href={`/subscribers/${contact.id}`}
+                      passHref
+                    >
+                      <ChakraLink
+                        color="blue.500"
+                        title="Ver detalhes"
+                      >{contact.email}</ChakraLink>
+                    </Link>
                   </Td>
                   <Td color="gray.500">{contact.createdAt}</Td>
                 </Tr>

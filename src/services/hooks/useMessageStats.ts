@@ -23,7 +23,7 @@ export async function getMessageStats(messageId): Promise<GetMessageStatsReponse
 }
 
 export function useMessageStats(messageId: string, options?: UseQueryOptions) {
-  return useQuery(['message_stats', [messageId]], () => getMessageStats(messageId), {
+  return useQuery(['message', [messageId]], () => getMessageStats(messageId), {
     staleTime: 1000 * 60 * 1,
     ...options
   }) as UseQueryResult<GetMessageStatsReponse, unknown> ;
