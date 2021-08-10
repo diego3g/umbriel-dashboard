@@ -64,7 +64,7 @@ export default function Tags() {
               >
                 <Input
                   name="search"
-                  placeholder="Search tags"
+                  placeholder="Buscar tags"
                   {...register('search')}
                 />
 
