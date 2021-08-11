@@ -146,6 +146,7 @@ export default function Templates() {
             totalCountOfRegisters={data?.totalCount}
             currentPage={page}
             onPageChange={setPage}
+            currentCountOfPosts={data?.templates.length}
           />
         </Box>
       </Flex>

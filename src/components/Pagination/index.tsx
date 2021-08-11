@@ -5,6 +5,7 @@ interface PaginationProps {
   totalCountOfRegisters: number;
   registersPerPage?: number;
   currentPage?: number;
+  currentCountOfPosts: number;
   onPageChange: (page: number) => void;
 }
 
@@ -22,7 +23,8 @@ export function Pagination({
   totalCountOfRegisters,
   registersPerPage = 20,
   currentPage = 1,
-  onPageChange
+  onPageChange,
+  currentCountOfPosts = 0
 }: PaginationProps) {
   const lastPage = Math.ceil(totalCountOfRegisters / registersPerPage);
 
@@ -43,7 +45,7 @@ export function Pagination({
       align="center"
     >
       <Box>
-        <strong>0</strong> - <strong>20</strong> de <strong>{totalCountOfRegisters}</strong>
+        <strong>{(currentPage - 1) * registersPerPage}</strong> - <strong>{(currentPage - 1) * registersPerPage + currentCountOfPosts}</strong> de <strong>{totalCountOfRegisters}</strong>
       </Box>
       <Stack
         direction="row"

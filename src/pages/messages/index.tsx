@@ -113,6 +113,7 @@ export default function Messages() {
             totalCountOfRegisters={data?.totalCount}
             currentPage={page}
             onPageChange={setPage}
+            currentCountOfPosts={data?.messages.length}
           /> 
         </Box>
       </Flex>

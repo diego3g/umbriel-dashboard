@@ -150,6 +150,7 @@ export default function Senders() {
             totalCountOfRegisters={data?.totalCount}
             currentPage={page}
             onPageChange={setPage}
+            currentCountOfPosts={data?.senders.length}
           />
         </Box>
       </Flex>

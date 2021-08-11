@@ -118,6 +118,7 @@ export default function Tags() {
             totalCountOfRegisters={data?.totalCount}
             currentPage={page}
             onPageChange={setPage}
+            currentCountOfPosts={data?.tags.length}
           />
         </Box>
       </Flex>
