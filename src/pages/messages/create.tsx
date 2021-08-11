@@ -9,7 +9,7 @@ import { Button } from '../../components/Button'
 import { Input } from '../../components/Form/Input'
 import { Select } from '../../components/Form/Select'
 import { withSSRAuth } from '../../utils/withSSRAuth'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from '../../services/apiClient'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { EditorState } from 'draft-js'
@@ -21,8 +21,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { AxiosError } from 'axios'
 import Link from 'next/link'
-
-import styles from '../../styles/lib/draft-js/previewStyles.module.css'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -84,7 +82,7 @@ export default function CreateMessage() {
   const router = useRouter()
   const toast = useToast()
 
-  const { register, handleSubmit, control, watch, formState } = useForm({
+  const { register, handleSubmit, control, formState } = useForm({
     defaultValues: {
       sender: '',
       tags: '',
@@ -97,28 +95,11 @@ export default function CreateMessage() {
 
   const { errors } = formState;
 
-  const { sender, subject, content } = watch();
-
-  const previewFormattedBodyContent = useMemo(() => {
-    if (content && content.constructor.name === "EditorState") {
-      const currentContent = content.getCurrentContent();
-      
-      if (currentContent.hasText()) {
-        const convertedToHtml = convertToHTML({})(currentContent as any)
-        
-        return convertedToHtml;
-      }
-    }      
-
-    return '';
-  }, [content])
-
   const createMessage = useMutation(
     async (message: CreateMessageFormData) => {
       const response = await api.post('/messages', message);
 
       return response.data;
-
     },
     {
       onSuccess: () => {
@@ -241,7 +222,6 @@ export default function CreateMessage() {
             <TabList>
               <Tab>Entrega</Tab>
               <Tab>Conteúdo</Tab>
-              <Tab>Preview</Tab>
             </TabList>
             <Divider my="6" />
             <TabPanels>
@@ -279,9 +259,6 @@ export default function CreateMessage() {
                     <FormLabel>Quem vai receber essa mensagem?</FormLabel>
                     <Flex mb="2" justifyContent="space-between" alignItems="center">
                       <Text fontSize="sm" color="gray.500">Selecione os recipientes</Text>
-                      {/* <Text fontSize="sm" color="gray.500">
-                        <Text fontWeight="medium" color="pink.500" display="inline">400.019</Text> recipientes
-                      </Text> */}
                     </Flex>
                     <Select
                       h="40"
@@ -317,16 +294,6 @@ export default function CreateMessage() {
                     control={control}
                   />
                 </VStack>
-              </TabPanel>
-              <TabPanel p="0">
-                <Heading size="md" fontWeight="bold">Assunto do e-mail</Heading>
-                <Text mt="2" fontWeight="medium">{subject}</Text>
-                <Heading mt="4" size="md" fontWeight="bold">Remetente</Heading>
-                {senders.map(s => s.id === sender && (
-                  <Text key={s.id} mt="2">{`${s.name} | <${s.email}>`}</Text>
-                ))}
-                <Heading mt="4" size="md" fontWeight="bold">Conteúdo</Heading>
-                <Box mt="4" bg="gray.100" p="4" borderRadius="md" className={styles.preview} dangerouslySetInnerHTML={{ __html: previewFormattedBodyContent}}/>
               </TabPanel>
             </TabPanels>
           </Tabs>
