@@ -126,6 +126,7 @@ export default function Subscribers() {
             totalCountOfRegisters={data?.totalCount}
             currentPage={page}
             onPageChange={setPage}
+            currentCountOfPosts={data?.contacts.length}
           />
         </Box>
       </Flex>
