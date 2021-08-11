@@ -19,6 +19,7 @@ type MessageDetailsProps = {
     id: string
     subject: string
     body: string
+    sentAt: Date
     sender: {
       name: string
       email: string
@@ -95,17 +96,19 @@ export default function MessageDetails({ message }: MessageDetailsProps) {
             <Box>
               <Heading size="lg" fontWeight="medium">Detalhes da mensagem</Heading>
             </Box>
-            <Button
-              mt="4"
-              type="submit"
-              size="md"
-              leftIcon={<RiSendPlaneLine size="24" />}
-              onClick={() => handleSendMessage(message.id)}
-              isLoading={sendMessage.isLoading}
-              colorScheme="pink"
-            >
-              REALIZAR ENVIO
-            </Button>
+            {!message?.sentAt && (
+              <Button
+                mt="4"
+                type="submit"
+                size="md"
+                leftIcon={<RiSendPlaneLine size="24" />}
+                onClick={() => handleSendMessage(message.id)}
+                isLoading={sendMessage.isLoading}
+                colorScheme="pink"
+              >
+                REALIZAR ENVIO
+              </Button>
+            )}
           </Flex>
 
           <Heading size="md" fontWeight="bold">Assunto do e-mail</Heading>
