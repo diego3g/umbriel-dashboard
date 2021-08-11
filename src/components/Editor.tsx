@@ -48,6 +48,14 @@ const blockRenderMap = Map({
 
 const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 
+function myBlockStyleFn(contentBlock) {
+  const type = contentBlock.getType();
+
+  if (type === 'unstyled') {
+    return editorStyles.paragraph;
+  }
+}
+
 type FormValues = any;
 
 type EditorProps = {
@@ -63,7 +71,14 @@ export default function Editor({ name, control, label, description, error }: Edi
     <FormControl id={name} isInvalid={!!error}>
       {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
       {description && <Text mb="4" fontSize="small" colorScheme="gray">{description}</Text>}
-      <Box borderColor={!!error ? 'red.500': 'gray.200'} borderWidth={2} borderRadius={4} p="4">
+      <Box
+        borderColor={!!error ? 'red.500': 'gray.200' }
+        borderWidth={2}
+        borderRadius={4}
+        paddingRight="4"
+        paddingLeft="4"
+        paddingBottom="4"
+      >
         <Controller
           name={name}
           control={control}
@@ -72,6 +87,7 @@ export default function Editor({ name, control, label, description, error }: Edi
           }) => (
             <div className={editorStyles.editor}>
               <DraftEditor
+                blockStyleFn={myBlockStyleFn}
                 editorState={value}
                 onChange={onChange}
                 plugins={[emojiPlugin, linkifyPlugin, inlineToolbarPlugin, linkPlugin ]}
