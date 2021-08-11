@@ -12,7 +12,6 @@ import { api } from "../../services/apiClient"
 import { withSSRAuth } from "../../utils/withSSRAuth"
 import { useRouter } from "next/router"
 
-import styles from '../../styles/lib/draft-js/previewStyles.module.css'
 import { AxiosError } from "axios"
 
 type MessageDetailsProps = {
@@ -114,7 +113,7 @@ export default function MessageDetails({ message }: MessageDetailsProps) {
           <Heading mt="4" size="md" fontWeight="bold">Remetente</Heading>
           <Text mt="2">{`${message.sender.name} | <${message.sender.email}>`}</Text>
           <Heading mt="4" size="md" fontWeight="bold">Conteúdo</Heading>
-          <Box className={styles.preview} mt="4" bg="gray.100" p="4" borderRadius="md" dangerouslySetInnerHTML={{ __html: message.body }}/>
+          <Box mt="4" bg="gray.100" p="4" borderRadius="md" dangerouslySetInnerHTML={{ __html: message.body }}/>
         </Box>
       </Flex>
     </Box>

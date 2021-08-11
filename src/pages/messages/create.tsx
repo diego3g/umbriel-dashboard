@@ -21,6 +21,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { AxiosError } from 'axios'
 import Link from 'next/link'
+import { setupApiClient } from '../../services/api'
 
 const TextEditor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
@@ -78,11 +79,12 @@ export default function CreateMessage() {
   const [senders, setSenders] = useState<Sender[]>([])
   const [templates, setTemplates] = useState<Template[]>([])
   const [tags, setTags] = useState<Tag[]>([])
+  const [numberOfRecipients, setNumberOfRecipients] = useState(0)
 
   const router = useRouter()
   const toast = useToast()
 
-  const { register, handleSubmit, control, formState } = useForm({
+  const { register, handleSubmit, control, watch, formState } = useForm({
     defaultValues: {
       sender: '',
       tags: '',
@@ -92,6 +94,24 @@ export default function CreateMessage() {
     },
     resolver: yupResolver(createMessageFormSchema)
   });
+
+  const { tags: selectedTags } = watch()
+
+  useEffect(() => {
+    async function loadNumberOfRecipients() {
+      const api = setupApiClient();
+
+      const response = await api.get('/recipients/count', {
+        params: {
+          tagIds: selectedTags
+        }
+      })
+
+      setNumberOfRecipients(response.data.data.count)
+    }
+
+    loadNumberOfRecipients()
+  }, [selectedTags])
 
   const { errors } = formState;
 
@@ -259,6 +279,9 @@ export default function CreateMessage() {
                     <FormLabel>Quem vai receber essa mensagem?</FormLabel>
                     <Flex mb="2" justifyContent="space-between" alignItems="center">
                       <Text fontSize="sm" color="gray.500">Selecione os recipientes</Text>
+                      <Text fontSize="sm" color="gray.500">
+                        <Text fontWeight="medium" color="pink.500" display="inline">{numberOfRecipients}</Text> recipientes
+                      </Text>
                     </Flex>
                     <Select
                       h="40"
