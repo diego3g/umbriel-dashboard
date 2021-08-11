@@ -30,7 +30,7 @@
     "draft-js-plugins-editor": "^3.0.0",
     "draft-js-static-toolbar-plugin": "^3.0.1",
     "framer-motion": "^3.3.0-beta.22",
-    "immutable": "^4.0.0-rc.12",
+    "immutable": "^4.0.0-rc.14",
     "jwt-decode": "^3.1.2",
     "next": "10.0.6",
     "nookies": "^2.5.2",

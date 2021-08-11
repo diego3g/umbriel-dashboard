@@ -1,6 +1,7 @@
 import { default as DraftEditor } from "@draft-js-plugins/editor"
 import createEmojiPlugin from '@draft-js-plugins/emoji';
 import createLinkifyPlugin from '@draft-js-plugins/linkify';
+import { Map } from 'immutable';
 
 import { FormControl, FormLabel, Box, FormErrorMessage, Text } from '@chakra-ui/react'
 
@@ -29,6 +30,7 @@ import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
 import { Controller, Control } from 'react-hook-form'
 
 import editorStyles from '../styles/lib/draft-js/editorStyles.module.css';
+import { DefaultDraftBlockRenderMap } from "draft-js";
 
 const emojiPlugin = createEmojiPlugin({
   useNativeArt: true,
@@ -37,6 +39,14 @@ const emojiPlugin = createEmojiPlugin({
 const linkifyPlugin = createLinkifyPlugin();
 
 const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
+
+const blockRenderMap = Map({
+  'unstyled': {
+    element: 'p',
+  }
+});
+
+const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 
 type FormValues = any;
 
@@ -65,6 +75,7 @@ export default function Editor({ name, control, label, description, error }: Edi
                 editorState={value}
                 onChange={onChange}
                 plugins={[emojiPlugin, linkifyPlugin, inlineToolbarPlugin, linkPlugin ]}
+                blockRenderMap={extendedBlockRenderMap}
               />
               <EmojiSuggestions />
               <EmojiSelect />
