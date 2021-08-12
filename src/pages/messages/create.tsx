@@ -75,6 +75,32 @@ const createMessageFormSchema = yup.object().shape({
   })
 });
 
+const renderAsHTMLConfig = {
+  blockToHTML: (block) => {
+    if (block.type === 'unstyled') {
+      if (block.text === ' ' || block.text === '') return <br />;
+
+      const isUrlExpression = /^(?:http(s)?:\/\/)([\w.-])+(?:[\w\.-]+)+([\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.])+$/;
+
+      if (isUrlExpression.test(block.text)) {
+        return  <a href={block.text}>{block.text}</a>;
+      }
+
+      return <p />;
+    }
+    
+    if (block.type === 'PARAGRAPH') {
+      return <p />;
+    }
+  },
+  entityToHTML: (entity, originalText) => {
+    if (entity.type === 'LINK') {
+      return <a href={entity.data.url}>{originalText}</a>;
+    }
+    return originalText;
+  }
+}
+
 export default function CreateMessage() {
   const [senders, setSenders] = useState<Sender[]>([])
   const [templates, setTemplates] = useState<Template[]>([])
@@ -185,7 +211,7 @@ export default function CreateMessage() {
     try { 
       const currentContent = data.content.getCurrentContent();
 
-      const htmlFormattedBody = convertToHTML({})(currentContent as any)
+      const htmlFormattedBody = convertToHTML(renderAsHTMLConfig)(currentContent as any)
 
       await createMessage.mutateAsync({
         senderId: data.sender,
